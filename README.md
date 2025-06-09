@@ -3,8 +3,8 @@ COSC2804 - C++ Programming Studio - RMIT university
 
 ## Task Allocation
 - Team member 1: <John Doe, s123456>
-- Team member 2: <Jane Doe, s123456>
-- Team member 3: <Alex Kim, s123456>
+- Team member 2: <Vu Vuong Nguyen, s3969801>
+
 
 ## Branchers
 - John Doe, latest individual code in branch `acc123`
