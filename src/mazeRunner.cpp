@@ -6,6 +6,7 @@
 
 #include "menuUtils.h"
 #include "MazeReadWriteUtils.h"
+#include "Maze.h"
 
 #define NORMAL_MODE 0
 #define TESTING_MODE 1
@@ -22,6 +23,8 @@ int main(int argc, char** argv){
 
     bool mode = NORMAL_MODE;
     States curState = ST_Main;
+
+    Maze maze;
 
     try{
         //Read the mode
@@ -100,6 +103,23 @@ int main(int argc, char** argv){
                     std::cout << "Maze read successfully" << std::endl;
                     curState = ST_Main;
                     printMaze(mazeStructure);
+                    maze.build(mazeStructure);
+                    
+                    bool isolatedOK = maze.validateIsolations();
+                    // bool loopsOk = maze.validateLoops();
+
+                    cout << "isolatedOK: " << isolatedOK << endl;
+
+                    // if(!isolatedOK && !loopsOk) {
+                    //     cout << " Errors detected. Would you like to automatically fix them? (y/n)"
+                    // }
+                    // 1. fix isolation
+
+                    // 2. fix loops
+
+                    // 3. fix entrances
+
+                    
                 }else{
                     std::cout << "Error Reading Maze. Try again." << std::endl;
                 }
@@ -125,7 +145,7 @@ int main(int argc, char** argv){
             if(menuItem == 1){
                 // Solve Manually
                 std::cout << "TODO: Not implemented yet." << std::endl;
-
+                maze.print();
             }else if(menuItem == 2){
                 // Show Escape Route
                 std::cout << "TODO: Not implemented yet." << std::endl;
