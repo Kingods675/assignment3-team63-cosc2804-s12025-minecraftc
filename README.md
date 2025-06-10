@@ -2,14 +2,16 @@
 COSC2804 - C++ Programming Studio - RMIT university
 
 ## Task Allocation
-- Team member 1: <John Doe, s123456>
-- Team member 2: <Vu Vuong Nguyen, s3969801>
+- Team member 1: <Vu Vuong Nguyen, s3969801>
+- Team member 2: <Dropped out>
+- Team member 3: <Mostafa Miguil, s4100922>
 
 
 ## Branchers
 - John Doe, latest individual code in branch `acc123`
 - Jane Doe, latest individual code in branch `abc123`
 - Alex Kim, latest individual code in branch `abb123`
+
 - Intergrated code in branch `main`
 
 ## Video recording
