@@ -7,6 +7,7 @@
 #include "menuUtils.h"
 #include "MazeReadWriteUtils.h"
 #include "Maze.h"
+#include "solveMaze.h"
 
 #define NORMAL_MODE 0
 #define TESTING_MODE 1
@@ -50,6 +51,9 @@ int main(int argc, char** argv){
 
 
     printStartText();
+    
+    //maze solver object
+    solveMaze solver;
 
     //std::shared_ptr<Maze> maze = nullptr; 
 
@@ -102,6 +106,7 @@ int main(int argc, char** argv){
                 bool success = readMaze(mazeStructure, basePoint);
                 if(success){
                     std::cout << "Maze read successfully" << std::endl;
+                    solver.setMaze(mazeStructure, basePoint);
                     curState = ST_Main;
                     printMaze(mazeStructure);
                     maze.build(mazeStructure);
@@ -161,11 +166,10 @@ int main(int argc, char** argv){
             std::cin >> menuItem;
             if(menuItem == 1){
                 // Solve Manually
-                std::cout << "TODO: Not implemented yet." << std::endl;
-                maze.print();
+                solver.solveMazeManually(mode);
             }else if(menuItem == 2){
                 // Show Escape Route
-                std::cout << "TODO: Not implemented yet." << std::endl;
+                solver.breadthFirstSearch();
             }else if(menuItem == 3){
                 curState = ST_Main;
             }else{
