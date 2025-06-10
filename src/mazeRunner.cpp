@@ -73,6 +73,7 @@ int main(int argc, char** argv){
                 std::cout << mode << std::endl; //remove this during implementation
                                                 // added to make sure the starter code compiles with
                                                 // all flags
+                maze.draw();
                 
             }else if(menuItem == 3){
                 curState = ST_SolveMaze;
@@ -109,6 +110,22 @@ int main(int argc, char** argv){
                     // bool loopsOk = maze.validateLoops();
 
                     cout << "isolatedOK: " << isolatedOK << endl;
+
+                    if (!isolatedOK)
+                    {
+                        maze.fixIsolations();
+                        // isolatedOK = maze.validateIsolations();
+                        cout << "\nAFTER FIX: isolatedOK: " << isolatedOK << endl;
+
+                        for (vector<char> row : maze.getMaze())
+                        {
+                            for (char c : row)
+                            {
+                                cout << c << " ";
+                            }
+                            cout << endl;
+                        }
+                    }
 
                     // if(!isolatedOK && !loopsOk) {
                     //     cout << " Errors detected. Would you like to automatically fix them? (y/n)"
