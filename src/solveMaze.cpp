@@ -1,0 +1,197 @@
+#include "solveMaze.h"
+
+
+ void solveMaze:: setMaze(const std::vector<std::vector<char>>& maze, 
+        const mcpp::Coordinate& basePoint){
+    
+    mazeInput = maze;
+    base = basePoint;
+}
+
+bool solveMaze::checkBoundaries (const mcpp::Coordinate& pos){
+
+    unsigned int len = mazeInput.size();
+    unsigned int wid = 0;
+
+    if (len > 0){
+        wid = mazeInput[0].size();
+    }
+    
+    bool inBoundaries = false;
+
+    if (len > 0 && wid > 0){
+
+        if (pos.x > base.x && pos.x < base.x + len
+        && pos.z > base.z && pos.z < base.z + wid){
+            inBoundaries = true;
+        }
+
+        else{
+            inBoundaries = false;
+        }
+
+        std::cout << "Maze test: length: " << len << " width: " << wid << std::endl;
+
+    }
+
+    else{
+        std::cout << "Maze test: length: " << len << " width: " << wid << std::endl;
+    }
+
+    return inBoundaries;
+
+}
+
+
+
+void solveMaze:: solveMazeManually(bool state){
+
+    mcpp::MinecraftConnection mc;
+
+    unsigned int len = mazeInput.size();
+    unsigned int wid = 0;
+
+    if (len > 0){
+        wid = mazeInput[0].size();
+    }
+
+
+
+
+
+    if (state == 1){
+        if (base != mcpp::Coordinate(0,0,0)){
+        mcpp::Coordinate targetPos = base + mcpp::Coordinate(len - 1, 0, wid - 1);
+        mc.setPlayerPosition(targetPos);
+        }
+
+        else{
+            std::cout << "No maze to solve" << std::endl;
+        }
+    }
+        
+}
+
+
+
+void solveMaze:: breadthFirstSearch(){
+    mcpp::MinecraftConnection mc;
+    startPos = mc.getPlayerPosition();
+    exitPos = mcpp::Coordinate(0,0,0);
+
+    //clear all containers so that users can use bfs search multiple times
+    while (!queue.empty()){
+        queue.pop();
+    } 
+
+    visited.clear();
+    previous.clear();
+    exitFound = false;
+
+    //initialise queue with starting position
+    queue.push(startPos);
+    //initialise visitied with starting position
+    visited.push_back(startPos);
+    //array for storing directions (right, left, forward, back);
+    moveTo = {{1,0,0}, {-1,0,0}, {0,0,1}, {0,0,-1}};
+
+
+
+    if (checkBoundaries(startPos)){
+    
+    //begin loop
+    while (!exitFound && !queue.empty()){ 
+
+        //current added to front of queue
+        mcpp::Coordinate curr = queue.front();
+        //remove last position
+        queue.pop();
+
+        //run for loop that checks if each position one space out is visited
+        for (int i = 0; i < 4; ++i){
+            mcpp::Coordinate adjacent {curr.x + moveTo[i].x, curr.y, curr.z + moveTo[i].z};
+            bool blockVisited = false;
+            for (mcpp::Coordinate& v : visited){
+                //if the current block is equal to block being compared, mark as visited
+                if (v.x == adjacent.x && v.y == adjacent.y && v.z == adjacent.z){
+                    blockVisited = true;
+                }
+            }
+
+            //check if block is a wall (wood plank) or not
+            if (!exitFound && !blockVisited){
+                mcpp::BlockType block = mc.getBlock(adjacent);
+                //exit condition (when blue carpet is found)
+                if (block == mcpp::Blocks::BLUE_CARPET){
+                    exitFound = true;
+                    exitPos = adjacent;
+                    previous.push_back({adjacent, curr});
+                }
+                //if not equal to wood plank, then it is walkable
+                else if (block != mcpp::Blocks::ACACIA_WOOD_PLANK){
+                    //add to queue
+                    queue.push(adjacent);
+                    //add to visited list
+                    visited.push_back(adjacent);
+                    //add to previous list
+                    previous.push_back({adjacent, curr});
+                }
+            }
+        }
+    }
+
+    //once bfs search is finished and path is found, store in vector.
+    if (exitFound){
+        std::vector<mcpp::Coordinate> solvedRoute;
+        //start from exit position
+        mcpp::Coordinate curr = exitPos;
+        bool reachedStartPos = false;
+        //traceback path from exit position to beginning
+        while(!reachedStartPos){
+            //current position added to end of vector
+            solvedRoute.push_back(curr);
+            //check if we've reached the beginning by comparing coordinates
+            if (curr.x == startPos.x && curr.y == startPos.y && curr.z == startPos.z){
+                reachedStartPos = true;
+            }
+
+
+            else{
+                //initalise parent block
+                mcpp::Coordinate previousBlock {-1, -1, -1};
+                for (auto& p : previous) {
+                    // compare current position and child node
+                    if (p.first.x == curr.x && p.first.y == curr.y && p.first.z == curr.z){
+                        previousBlock = p.second;
+                    }
+                }
+
+                //set the current position as the previous node.
+                curr = previousBlock;
+            }
+        }
+        //once path is stored reverse it to get solved route from beginning to end.
+        std::reverse(solvedRoute.begin(), solvedRoute.end());
+
+        //print coords and highlight route in minecraft
+        for (int i = 0; i < solvedRoute.size() - 1; ++i){
+            mcpp::Coordinate coord = solvedRoute[i];
+            mc.setBlock(mcpp::Coordinate(coord.x, coord.y, coord.z), mcpp::Blocks::LIME_CARPET);
+            std::cout << "step [" << i << "]: (" << coord.x << ", " << coord.y << ", " << coord.z << ")" << std::endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            mc.setBlock(mcpp::Coordinate(coord.x, coord.y, coord.z), mcpp::Blocks::AIR);
+        }
+    
+    }
+        //if no route found, print this.
+    else{
+        std::cout << "Sorry, no path, you are trapped!";
+    }
+    }
+
+    else{
+        std::cout << "Get inside maze boundaries" << std::endl;
+    }
+    
+}
+
