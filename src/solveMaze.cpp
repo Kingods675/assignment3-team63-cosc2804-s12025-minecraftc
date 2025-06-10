@@ -32,7 +32,7 @@ bool solveMaze::checkBoundaries (const mcpp::Coordinate& pos){
 
         //if within maze dimensions
         if (pos.x > base.x && pos.x < base.x + len
-        && pos.z > base.z && pos.z < base.z + wid){
+        && pos.z > base.z && pos.z < base.z + wid && pos.y < base.y + 2){
             inBoundaries = true;
         }
 
@@ -86,6 +86,50 @@ void solveMaze:: solveMazeManually(bool state){
 
         else{
             std::cout << "No maze to solve" << std::endl;
+        }
+    }
+
+        //for normal mode
+    else{
+        
+        //bool for if we can teleport to space
+        bool canTeleport = false;
+
+        //check if there is a maze
+        if (base != mcpp::Coordinate(0,0,0)){
+            
+            mcpp::Coordinate teleportPos;
+            //loop until we can find an empty cell to teleport to in maze
+            while (!canTeleport){
+            
+            //randomx to add to x coordinate
+            int randx = std::rand() % (wid - 2) + 1;
+            //randomz to add to z coordinate
+            int randz = std::rand() % (len - 2) + 1;
+
+            //target position equal to basepoint + offset
+
+            teleportPos = base + mcpp::Coordinate(randx, 0, randz);
+
+            //store blocktype
+            mcpp::BlockType block = mc.getBlock(teleportPos);
+
+            //not equal to wood (wall), then able to teleport to
+            if (block != mcpp::Blocks::ACACIA_WOOD_PLANK){
+                //break the loop
+                canTeleport = true;
+            }
+            }
+            
+            //teleport player to coordinate
+            mc.setPlayerPosition(teleportPos);
+            //print coordinate.
+            std::cout << "Teleporting to: (" << teleportPos.x << ", " << teleportPos.y << ", " << teleportPos.z << ")" << std::endl;
+        }
+
+        else{
+            std::cout << "No maze to solve" << std::endl;
+
         }
     }
         

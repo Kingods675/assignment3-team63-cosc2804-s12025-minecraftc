@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include "mcpp/mcpp.h"
 
@@ -6,10 +5,14 @@
 #include <chrono>
 #include <thread>
 #include <vector>
+#include <cstdlib>
+
 
 class solveMaze {
 
     public:
+
+        //solve maze functions
         void setMaze(const std::vector<std::vector<char>>& maze, 
         const mcpp::Coordinate& basePoint);
         void breadthFirstSearch();

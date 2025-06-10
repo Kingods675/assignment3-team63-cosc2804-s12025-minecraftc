@@ -52,7 +52,7 @@ int main(int argc, char** argv){
 
     printStartText();
     
-    
+    //maze solver object
     solveMaze solver;
 
     //std::shared_ptr<Maze> maze = nullptr; 
