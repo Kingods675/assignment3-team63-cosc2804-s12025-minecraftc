@@ -1,26 +1,36 @@
 #include "solveMaze.h"
 
-
+//store maze dimensions from terminal
  void solveMaze:: setMaze(const std::vector<std::vector<char>>& maze, 
         const mcpp::Coordinate& basePoint){
     
     mazeInput = maze;
+    //store basepoint
     base = basePoint;
 }
 
+
+//check if player is within maze
 bool solveMaze::checkBoundaries (const mcpp::Coordinate& pos){
 
+    //store length by getting maze length
     unsigned int len = mazeInput.size();
+
+    //temporarily make width 0
     unsigned int wid = 0;
 
+    //if maze length exists, get width
     if (len > 0){
         wid = mazeInput[0].size();
     }
     
+    //check if in boundaries
     bool inBoundaries = false;
 
+    //check if both length and width are greater than 0
     if (len > 0 && wid > 0){
 
+        //if within maze dimensions
         if (pos.x > base.x && pos.x < base.x + len
         && pos.z > base.z && pos.z < base.z + wid){
             inBoundaries = true;
@@ -30,11 +40,14 @@ bool solveMaze::checkBoundaries (const mcpp::Coordinate& pos){
             inBoundaries = false;
         }
 
+        //test output. will be changed later
         std::cout << "Maze test: length: " << len << " width: " << wid << std::endl;
 
     }
 
     else{
+
+        //test output.
         std::cout << "Maze test: length: " << len << " width: " << wid << std::endl;
     }
 
@@ -43,11 +56,12 @@ bool solveMaze::checkBoundaries (const mcpp::Coordinate& pos){
 }
 
 
-
+//solve manually functionality
 void solveMaze:: solveMazeManually(bool state){
 
     mcpp::MinecraftConnection mc;
 
+    //store length and width
     unsigned int len = mazeInput.size();
     unsigned int wid = 0;
 
@@ -58,11 +72,16 @@ void solveMaze:: solveMazeManually(bool state){
 
 
 
-
+    //if in test mode:
     if (state == 1){
+        //if basepoint isnt empty
         if (base != mcpp::Coordinate(0,0,0)){
-        mcpp::Coordinate targetPos = base + mcpp::Coordinate(len - 1, 0, wid - 1);
-        mc.setPlayerPosition(targetPos);
+        
+        //initialise variable teleportPos
+        mcpp::Coordinate teleportPos = base + mcpp::Coordinate(len - 1, 0, wid - 1);
+
+        //teleport player to bottom right
+        mc.setPlayerPosition(teleportPos);
         }
 
         else{
