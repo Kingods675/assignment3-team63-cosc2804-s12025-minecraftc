@@ -12,7 +12,8 @@
 #define NORMAL_MODE 0
 #define TESTING_MODE 1
 
-enum States{
+enum States
+{
     ST_Main,
     ST_GetMaze,
     ST_SolveMaze,
@@ -20,116 +21,149 @@ enum States{
     ST_Exit
 };
 
-int main(int argc, char** argv){
+int main(int argc, char **argv)
+{
 
     bool mode = NORMAL_MODE;
     States curState = ST_Main;
 
     Maze maze;
 
-    try{
-        //Read the mode
-        if(argc > 1){
-            if(argc > 2){
-                throw std::invalid_argument
-                    ("Can only read one command line argument, you entered more");
+    try
+    {
+        // Read the mode
+        if (argc > 1)
+        {
+            if (argc > 2)
+            {
+                throw std::invalid_argument("Can only read one command line argument, you entered more");
             }
             std::string input(argv[1]);
-            if(input == "-testmode"){
+            if (input == "-testmode")
+            {
                 mode = TESTING_MODE;
-            }else{
-                throw std::invalid_argument
-                    ("Enter argument `-testmode` if you need to operate in testing mode");
+            }
+            else
+            {
+                throw std::invalid_argument("Enter argument `-testmode` if you need to operate in testing mode");
             }
         }
-    }catch(std::invalid_argument& e){
+    }
+    catch (std::invalid_argument &e)
+    {
         std::cout << "Invalid argument: " << e.what() << std::endl;
-    }catch(std::exception& e){
+    }
+    catch (std::exception &e)
+    {
         std::cout << e.what() << std::endl;
     }
 
-
-
     printStartText();
-    
-    //maze solver object
-    solveMaze solver;
 
-    //std::shared_ptr<Maze> maze = nullptr; 
+    // maze solver object
+    //  solveMaze solver;
 
-    //State machine for menu        
+    // std::shared_ptr<Maze> maze = nullptr;
+
+    // State machine for menu
     while (curState != ST_Exit)
     {
-        
-        if(curState == ST_Main){
-            //In main menu
+
+        if (curState == ST_Main)
+        {
+            // In main menu
             printMainMenu();
 
             int menuItem = 0;
 
             std::cin >> menuItem;
-            if(menuItem == 1){
+            if (menuItem == 1)
+            {
                 curState = ST_GetMaze;
-            }else if(menuItem == 2){
-                
-                //TODO: Build maze
+            }
+            else if (menuItem == 2)
+            {
+
+                // TODO: Build maze
                 std::cout << "TODO: Not implemented yet." << std::endl;
-                std::cout << mode << std::endl; //remove this during implementation
-                                                // added to make sure the starter code compiles with
-                                                // all flags
+                std::cout << mode << std::endl; // remove this during implementation
+                                                //  added to make sure the starter code compiles with
+                                                //  all flags
                 maze.draw();
-                
-            }else if(menuItem == 3){
+            }
+            else if (menuItem == 3)
+            {
                 curState = ST_SolveMaze;
-            }else if(menuItem == 4){
+            }
+            else if (menuItem == 4)
+            {
                 curState = ST_Creators;
-            }else if(menuItem == 5){
+            }
+            else if (menuItem == 5)
+            {
                 curState = ST_Exit;
-            }else{
+            }
+            else
+            {
                 std::cout << "Input Error: Enter a number between 1 and 5 ...." << std::endl;
                 std::cin.clear();
                 std::cin.ignore(1000, '\n');
             }
-        } else if(curState == ST_GetMaze){
-            //In getMaze menu
+        }
+        else if (curState == ST_GetMaze)
+        {
+            // In getMaze menu
             printGenerateMazeMenu();
 
             int menuItem = 0;
 
             std::cin >> menuItem;
-            if(menuItem == 1){
+            if (menuItem == 1)
+            {
                 // Reading Maze from terminal
                 // TODO: Read the maze to an appropriate ADT
                 //          and use it throughout the code
-                std::vector< std::vector<char> > mazeStructure;
-                mcpp::Coordinate basePoint(0,0,0);
+                std::vector<std::vector<char>> mazeStructure;
+                mcpp::Coordinate basePoint(0, 0, 0);
                 bool success = readMaze(mazeStructure, basePoint);
-                if(success){
+                if (success)
+                {
                     std::cout << "Maze read successfully" << std::endl;
-                    solver.setMaze(mazeStructure, basePoint);
+                    // solver.setMaze(mazeStructure, basePoint);
                     curState = ST_Main;
                     printMaze(mazeStructure);
                     maze.build(mazeStructure);
-                    
-                    bool isolatedOK = maze.validateIsolations();
-                    // bool loopsOk = maze.validateLoops();
 
-                    cout << "isolatedOK: " << isolatedOK << endl;
+                    bool isolatedOK = maze.validateIsolations();
+                    bool loopsOk = maze.validateLoops();
+                    bool entranceOK = maze.hasValidEntrance();
 
                     if (!isolatedOK)
                     {
                         maze.fixIsolations();
                         // isolatedOK = maze.validateIsolations();
-                        cout << "\nAFTER FIX: isolatedOK: " << isolatedOK << endl;
+                    }
 
-                        for (vector<char> row : maze.getMaze())
+                    if (!entranceOK)
+                    {
+                        maze.fixEntrance();
+                    }
+                    
+                    if (!loopsOk)
+                    {
+                        maze.fixLoops();
+                        // loopsOK = maze.validateLoops();
+                    }
+
+                    cout << endl;
+
+                    for (vector<char> row : maze.getMaze())
+                    {
+                        for (char c : row)
                         {
-                            for (char c : row)
-                            {
-                                cout << c << " ";
-                            }
-                            cout << endl;
+                            cout << c << " ";
                         }
+                        cout << endl;
                     }
 
                     // if(!isolatedOK && !loopsOk) {
@@ -140,54 +174,64 @@ int main(int argc, char** argv){
                     // 2. fix loops
 
                     // 3. fix entrances
-
-                    
-                }else{
+                }
+                else
+                {
                     std::cout << "Error Reading Maze. Try again." << std::endl;
                 }
-
-            }else if(menuItem == 2){
-                //TODO: Generating random maze
+            }
+            else if (menuItem == 2)
+            {
+                // TODO: Generating random maze
                 std::cout << "TODO: Not implemented yet." << std::endl;
-                
-            }else if(menuItem == 3){
+            }
+            else if (menuItem == 3)
+            {
                 curState = ST_Main;
-            }else{
+            }
+            else
+            {
                 std::cout << "Input Error: Enter a number between 1 and 3 ...." << std::endl;
                 std::cin.clear();
                 std::cin.ignore(1000, '\n');
             }
-
-        } else if(curState == ST_SolveMaze){
+        }
+        else if (curState == ST_SolveMaze)
+        {
             printSolveMazeMenu();
 
             int menuItem = 0;
 
             std::cin >> menuItem;
-            if(menuItem == 1){
+            if (menuItem == 1)
+            {
                 // Solve Manually
-                solver.solveMazeManually(mode);
-            }else if(menuItem == 2){
+                // solver.solveMazeManually(mode);
+            }
+            else if (menuItem == 2)
+            {
                 // Show Escape Route
-                solver.breadthFirstSearch();
-            }else if(menuItem == 3){
+                // solver.breadthFirstSearch();
+            }
+            else if (menuItem == 3)
+            {
                 curState = ST_Main;
-            }else{
+            }
+            else
+            {
                 std::cout << "Error: input a valid number between 1 and 3...." << std::endl;
                 std::cin.clear();
                 std::cin.ignore(1000, '\n');
-             }
-
-        }else if(curState == ST_Creators){
+            }
+        }
+        else if (curState == ST_Creators)
+        {
             printTeamInfo();
             curState = ST_Main;
         }
-
     }
-
+    maze.deleteMaze();
     printExitMassage();
 
-
     return EXIT_SUCCESS;
-
 }
