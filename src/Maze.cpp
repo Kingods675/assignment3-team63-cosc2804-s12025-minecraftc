@@ -262,6 +262,8 @@ void Maze::draw(bool mode)
                 if (maze[i][j] == 'x')
                 {
                     mc.setBlock(pos, mcpp::Blocks::ACACIA_WOOD_PLANK);
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100) );
+                    mc.setBlock(pos, mcpp::Blocks::ACACIA_WOOD_PLANK);
                     std::this_thread::sleep_for(std::chrono::milliseconds(50));
                 }
                 pos.x++;

@@ -58,7 +58,7 @@ int main(int argc, char **argv)
     printStartText();
 
     // maze solver object
-    //  solveMaze solver;
+    solveMaze solver;
 
     // std::shared_ptr<Maze> maze = nullptr;
 
@@ -211,12 +211,12 @@ int main(int argc, char **argv)
             if (menuItem == 1)
             {
                 // Solve Manually
-                // solver.solveMazeManually(mode);
+                solver.solveMazeManually(mode);
             }
             else if (menuItem == 2)
             {
                 // Show Escape Route
-                // solver.breadthFirstSearch();
+                solver.breadthFirstSearch();
             }
             else if (menuItem == 3)
             {
