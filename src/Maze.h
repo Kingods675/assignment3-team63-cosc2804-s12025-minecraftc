@@ -1,3 +1,5 @@
+#pragma once
+
 #include <iostream>
 #include <vector>
 #include <chrono>
@@ -7,24 +9,34 @@
 
 using namespace std;
 
+struct BlockChange {
+    mcpp::Coordinate pos;
+    mcpp::BlockType originalBlock;
+};
+
+struct Entrance {
+    int i;
+    int j;
+};
+
 class Maze {
     private:
         vector<vector<char>> maze;
         vector<vector<char>> floodedMaze;
 
+        mcpp::MinecraftConnection& mc;
         mcpp::Coordinate origin;
-        mcpp::MinecraftConnection mc;
-
-        struct BlockChange {
-        mcpp::Coordinate pos;
-        mcpp::BlockType originalBlock;
-        };
-
+        
         BlockChange* changes; // Dynamic array to store changes
         int changeCount;
         int changeCapacity;
+        Entrance entrance;
 
     public:
+        // constructor
+        Maze(mcpp::MinecraftConnection& conn);
+
+        // methods
         void build(vector<vector<char>> maze);
         vector<vector<char>>& getMaze();
         void print();
@@ -38,8 +50,10 @@ class Maze {
         bool hasValidEntrance();
         void fixEntrance();
         
-        void draw();
+        void draw(bool mode);
         void deleteMaze();
+
+        void setOrigin(mcpp::Coordinate origin);
 
         ~Maze() {
         if (changes) {

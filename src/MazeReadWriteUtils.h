@@ -1,13 +1,19 @@
+#pragma once
+
 #include <iostream>
-#include "mcpp/mcpp.h"
 #include <deque>
 
+#include "mcpp/mcpp.h"
+#include "Maze.h"
 
-bool ReadBasePoint(mcpp::Coordinate& start){
+// #ifndef
+// define header
+// #endif
+
+
+bool ReadBasePoint(mcpp::Coordinate& start, mcpp::MinecraftConnection& mc, Maze& maze) {
     std::string input="";
     bool success = true;
-
-    mcpp::MinecraftConnection mc;
 
     std::cout << "In Minecraft, navigate to where you need the maze" << std::endl;
     std::cout << "to be built and type - done: " << std::endl;
@@ -19,6 +25,7 @@ bool ReadBasePoint(mcpp::Coordinate& start){
 
     if(success){
         start = mc.getPlayerPosition() + mcpp::Coordinate(1,0,1);
+        maze.setOrigin(mc.getPlayerPosition());
     }else{
         std::cout << "Basepoint is not correct." << std::endl;
         std::cin.clear();
@@ -56,12 +63,17 @@ bool readLengthWidth(unsigned int& xlength, unsigned int& zlength){
 
 }
 
-bool readMaze(std::vector< std::vector<char> >& maze, mcpp::Coordinate& basePoint){
+bool readMaze(
+    std::vector< std::vector<char> >& maze, 
+    mcpp::Coordinate& basePoint, 
+    mcpp::MinecraftConnection& mc, 
+    Maze& myMaze
+) {
 
     unsigned int xlength = 0;
     unsigned int zlength = 0;
 
-    bool success = ReadBasePoint(basePoint);
+    bool success = ReadBasePoint(basePoint, mc, myMaze);
 
     if(success){
         success = readLengthWidth(xlength, zlength);

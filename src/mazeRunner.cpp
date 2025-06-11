@@ -23,11 +23,8 @@ enum States
 
 int main(int argc, char **argv)
 {
-
     bool mode = NORMAL_MODE;
     States curState = ST_Main;
-
-    Maze maze;
 
     try
     {
@@ -65,6 +62,10 @@ int main(int argc, char **argv)
 
     // std::shared_ptr<Maze> maze = nullptr;
 
+    mcpp::MinecraftConnection mc;
+
+    Maze maze(mc);
+
     // State machine for menu
     while (curState != ST_Exit)
     {
@@ -83,13 +84,7 @@ int main(int argc, char **argv)
             }
             else if (menuItem == 2)
             {
-
-                // TODO: Build maze
-                std::cout << "TODO: Not implemented yet." << std::endl;
-                std::cout << mode << std::endl; // remove this during implementation
-                                                //  added to make sure the starter code compiles with
-                                                //  all flags
-                maze.draw();
+                maze.draw(mode);
             }
             else if (menuItem == 3)
             {
@@ -125,43 +120,53 @@ int main(int argc, char **argv)
                 //          and use it throughout the code
                 std::vector<std::vector<char>> mazeStructure;
                 mcpp::Coordinate basePoint(0, 0, 0);
-                bool success = readMaze(mazeStructure, basePoint);
+                bool success = readMaze(mazeStructure, basePoint, mc, maze);
                 if (success)
                 {
                     std::cout << "Maze read successfully" << std::endl;
                     // solver.setMaze(mazeStructure, basePoint);
                     curState = ST_Main;
-                    printMaze(mazeStructure);
+                    // printMaze(mazeStructure);
                     maze.build(mazeStructure);
 
                     bool isolatedOK = maze.validateIsolations();
-                    bool loopsOk = maze.validateLoops();
                     bool entranceOK = maze.hasValidEntrance();
+                    bool loopsOk = maze.validateLoops();
 
-                    if (!isolatedOK)
+                    if (!isolatedOK || !entranceOK || !loopsOk)
                     {
-                        maze.fixIsolations();
-                        // isolatedOK = maze.validateIsolations();
+                        cout << "Errors detected. Would you like to automatically fix them? (y/n)";
+                        char y;
+                        cin >> y;
+                        if (y == 'y' || y == 'Y')
+                        {
+
+                            if (!entranceOK)
+                            {
+                                maze.fixEntrance();
+                            }
+
+                            if (!loopsOk)
+                            {
+                                maze.fixLoops();
+                                // loopsOK = maze.validateLoops();
+                            }
+
+                            if (!isolatedOK)
+                            {
+                                maze.fixIsolations();
+                                // isolatedOK = maze.validateIsolations();
+                            }
+                        }
                     }
 
-                    if (!entranceOK)
-                    {
-                        maze.fixEntrance();
-                    }
-                    
-                    if (!loopsOk)
-                    {
-                        maze.fixLoops();
-                        // loopsOK = maze.validateLoops();
-                    }
-
-                    cout << endl;
+                    // cout << endl;
 
                     for (vector<char> row : maze.getMaze())
                     {
                         for (char c : row)
                         {
-                            cout << c << " ";
+                            cout << c;
                         }
                         cout << endl;
                     }

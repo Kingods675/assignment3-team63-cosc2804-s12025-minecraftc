@@ -9,6 +9,8 @@
 
 using namespace std;
 
+Maze::Maze(mcpp::MinecraftConnection &mc) : mc(mc) {};
+
 void Maze::build(vector<vector<char>> maze)
 {
     this->maze = maze;
@@ -84,8 +86,20 @@ bool Maze::validateIsolations()
 {
     vector<vector<char>> copy = this->maze;
 
-    // TODO: check if char is a dot before calling floodfill
-    floodFill(copy, 1, 4);
+    // floodFill(copy, 1, 4);
+
+    for (size_t i = 0; i < copy.size(); i++)
+    {
+        for (size_t j = 0; j < copy[i].size(); j++)
+        {
+            if (copy[i][j] == '.')
+            {
+                floodFill(copy, i, j);
+                cout << "Flood fill at i-j = " << i << j << endl;
+                break;
+            }
+        }
+    }
 
     this->floodedMaze = copy;
 
@@ -98,7 +112,6 @@ bool Maze::validateIsolations()
     //     }
     //     cout << endl;
     // }
-
 
     for (vector<char> row : copy)
     {
@@ -197,37 +210,47 @@ void Maze::fixIsolations()
     // }
 }
 
-void Maze::draw()
+void Maze::draw(bool mode)
 {
-    origin = mc.getPlayerPosition(); // x y z
+    // tesing mode
+    if (mode == 1)
+    {
+        mc.setPlayerPosition(mcpp::Coordinate(4848, 71, 4369));
+    }
+
+    this->origin = mc.getPlayerPosition(); // x y z
     mcpp::Coordinate pos = origin;
 
     changeCapacity = (maze.size() + 2) * (maze[0].size() + 2) * 3; // Worst case
     changes = new BlockChange[changeCapacity];
     changeCount = 0;
 
+    // clean up terrain
     for (size_t i = 0; i < maze.size() + 2; i++)
     {
         for (size_t j = 0; j < maze[0].size() + 2; j++)
         {
             pos.y = origin.y - 1;
-            if (changeCount < changeCapacity) {
+            if (changeCount < changeCapacity)
+            {
                 changes[changeCount++] = {pos, mc.getBlock(pos)};
             }
             mc.setBlock(pos, mcpp::Blocks::GRASS);
 
             pos.y = origin.y;
-            if (changeCount < changeCapacity) {
+            if (changeCount < changeCapacity)
+            {
                 changes[changeCount++] = {pos, mc.getBlock(pos)};
             }
             mc.setBlock(pos, mcpp::Blocks::AIR);
-            std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            std::this_thread::sleep_for(std::chrono::milliseconds(10));
             pos.x++;
         }
         pos.z++;
         pos.x = origin.x;
     }
 
+    // build maze
     for (size_t y = 0; y < 3; y++)
     {
         pos.x = origin.x + 1;
@@ -248,6 +271,11 @@ void Maze::draw()
         }
         pos.y++;
     }
+
+    // draw entrance carpet
+    cout << "Drawing entrance: " << this->entrance.i << ":" << this->entrance.j << endl;
+    mcpp::Coordinate entranceCoor = this->origin + mcpp::Coordinate(entrance.j + 1, 0, entrance.i); // TODO: check direction
+    mc.setBlock(entranceCoor, mcpp::Blocks::BLUE_CARPET);
 }
 
 void Maze::deleteMaze()
@@ -271,13 +299,15 @@ void Maze::deleteMaze()
         pos.y++;
     }
 
-    for (int i = changeCount - 1; i >= 0; i--) {
+    for (int i = changeCount - 1; i >= 0; i--)
+    {
         mc.setBlock(changes[i].pos, changes[i].originalBlock);
         std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
-    
+
     // Clean up allocated memory
-    if (changes) {
+    if (changes)
+    {
         delete[] changes;
         changes = nullptr;
     }
@@ -353,12 +383,15 @@ void Maze::fixEntrance()
 
     bool entranceCreated = false;
 
+    // 100% open on top
     for (size_t x = 1; x < maze[0].size() - 1; x++)
     {
         if (maze[1][x] == '.')
         {
             maze[0][x] = '.';
             entranceCreated = true;
+            entrance.i = 0;
+            entrance.j = x;
             break;
         }
     }
@@ -372,6 +405,8 @@ void Maze::fixEntrance()
             {
                 maze[maze.size() - 1][x] = '.';
                 entranceCreated = true;
+                entrance.i = maze.size() - 1;
+                entrance.j = x;
                 break;
             }
         }
@@ -386,6 +421,8 @@ void Maze::fixEntrance()
             {
                 maze[z][0] = '.';
                 entranceCreated = true;
+                entrance.i = z;
+                entrance.j = 0;
                 break;
             }
         }
@@ -400,6 +437,8 @@ void Maze::fixEntrance()
             {
                 maze[z][maze[0].size() - 1] = '.';
                 entranceCreated = true;
+                entrance.i = z;
+                entrance.j = maze[0].size() - 1;
                 break;
             }
         }
@@ -511,18 +550,18 @@ void Maze::fixLoops()
                     break;
                 }
 
-                else if (i + 2 < copy.size() -1 && copy[i + 2][j] == 'o')
+                else if (i + 2 < copy.size() - 1 && copy[i + 2][j] == 'o')
                 {
                     this->maze[i + 1][j] = 'x';
                     break;
                 }
 
-                else if (j + 2 < copy[i].size() - 1 && copy[i][j + 2] == 'o') 
+                else if (j + 2 < copy[i].size() - 1 && copy[i][j + 2] == 'o')
                 {
                     this->maze[i][j + 1] = 'x';
                     break;
                 }
-                
+
                 else if (j >= 2 && copy[i][j - 2] == 'o')
                 {
                     this->maze[i][j - 1] = 'x';
@@ -542,5 +581,9 @@ void Maze::fixLoops()
     //     }
     //     cout << endl;
     // }
+}
 
+void Maze::setOrigin(mcpp::Coordinate origin)
+{
+    this->origin = origin;
 }
