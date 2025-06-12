@@ -96,7 +96,7 @@ bool Maze::validateIsolations()
             if (copy[i][j] == '.')
             {
                 floodFill(copy, i, j);
-                cout << "Flood fill at i-j = " << i << j << endl;
+                // cout << "Flood fill at i-j = " << i << j << endl;
                 filled = true;
             }
         }
@@ -263,6 +263,8 @@ void Maze::draw(bool mode)
             {
                 if (maze[i][j] == 'x')
                 {
+                    mc.setBlock(pos, mcpp::Blocks::ACACIA_WOOD_PLANK);
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100) );
                     mc.setBlock(pos, mcpp::Blocks::ACACIA_WOOD_PLANK);
                     std::this_thread::sleep_for(std::chrono::milliseconds(50));
                 }
