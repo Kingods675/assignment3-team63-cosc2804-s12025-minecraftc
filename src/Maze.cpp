@@ -295,6 +295,7 @@ void Maze::draw(bool mode)
     mc.setBlock(outsideEntranceCoor, mcpp::Blocks::BLUE_CARPET);
 }
 
+
 void Maze::deleteMaze()
 {
     mcpp::Coordinate pos = origin;
