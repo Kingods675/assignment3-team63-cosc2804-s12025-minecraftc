@@ -14,10 +14,10 @@
  bool solveMaze::checkBoundaries (const mcpp::Coordinate& pos){
 
      //store length by getting maze length
-     unsigned int len = mazeInput.size();
+     const int len = mazeInput.size();
 
      //temporarily make width 0
-     unsigned int wid = 0;
+     int wid = 0;
 
      //if maze length exists, get width
      if (len > 0){
@@ -237,7 +237,7 @@
          std::reverse(solvedRoute.begin(), solvedRoute.end());
 
          //print coords and highlight route in minecraft
-         for (int i = 0; i < solvedRoute.size() - 1; ++i){
+         for (size_t i = 0; i < solvedRoute.size() - 1; ++i){
              mcpp::Coordinate coord = solvedRoute[i];
              mc.setBlock(mcpp::Coordinate(coord.x, coord.y, coord.z), mcpp::Blocks::LIME_CARPET);
              std::cout << "step [" << i << "]: (" << coord.x << ", " << coord.y << ", " << coord.z << ")" << std::endl;
