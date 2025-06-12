@@ -124,7 +124,7 @@ int main(int argc, char **argv)
                 if (success)
                 {
                     std::cout << "Maze read successfully" << std::endl;
-                    // solver.setMaze(mazeStructure, basePoint);
+                    solver.setMaze(mazeStructure, basePoint);
                     curState = ST_Main;
                     // printMaze(mazeStructure);
                     maze.build(mazeStructure);

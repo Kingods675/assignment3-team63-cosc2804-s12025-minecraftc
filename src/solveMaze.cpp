@@ -120,6 +120,7 @@
                  canTeleport = true;
              }
              }
+             
             
              //teleport player to coordinate
              mc.setPlayerPosition(teleportPos);
