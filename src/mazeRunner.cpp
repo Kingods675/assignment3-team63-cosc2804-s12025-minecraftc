@@ -58,7 +58,7 @@ int main(int argc, char **argv)
     printStartText();
 
     // maze solver object
-    solveMaze solver;
+    // solveMaze solver;
 
     // std::shared_ptr<Maze> maze = nullptr;
 
@@ -124,7 +124,7 @@ int main(int argc, char **argv)
                 if (success)
                 {
                     std::cout << "Maze read successfully" << std::endl;
-                    solver.setMaze(mazeStructure, basePoint);
+                    // solver.setMaze(mazeStructure, basePoint);
                     curState = ST_Main;
                     // printMaze(mazeStructure);
                     maze.build(mazeStructure);
@@ -143,22 +143,26 @@ int main(int argc, char **argv)
                         std::cin >> y;
                         if (y == 'y' || y == 'Y')
                         {
-
                             if (!entranceOK)
+                                {
+                                    maze.fixEntrance();
+                                }
+                                
+                            while (!isolatedOK ||!loopsOk)
                             {
-                                maze.fixEntrance();
-                            }
 
-                            if (!isolatedOK)
-                            {
-                                maze.fixIsolations();
-                                // isolatedOK = maze.validateIsolations();
-                            }
 
-                            if (!loopsOk)
-                            {
-                                maze.fixLoops();
-                                // loopsOK = maze.validateLoops();
+                                if (!isolatedOK)
+                                {
+                                    maze.fixIsolations();
+                                    isolatedOK = maze.validateIsolations();
+                                }
+
+                                if (!loopsOk)
+                                {
+                                    maze.fixLoops();
+                                    loopsOk = maze.validateLoops();
+                                }
                             }
                         }
                     }
@@ -216,12 +220,12 @@ int main(int argc, char **argv)
             if (menuItem == 1)
             {
                 // Solve Manually
-                solver.solveMazeManually(mode);
+                // solver.solveMazeManually(mode);
             }
             else if (menuItem == 2)
             {
                 // Show Escape Route
-                solver.breadthFirstSearch();
+                // solver.breadthFirstSearch();
             }
             else if (menuItem == 3)
             {
