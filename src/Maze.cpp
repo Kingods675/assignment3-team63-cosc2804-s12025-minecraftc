@@ -7,43 +7,43 @@
 
 #include <mcpp/mcpp.h>
 
-using namespace std;
+
 
 Maze::Maze(mcpp::MinecraftConnection &mc) : mc(mc) {};
 
-void Maze::build(vector<vector<char>> maze)
+void Maze::build(std::vector<std::vector<char>> maze)
 {
     this->maze = maze;
 }
 
-vector<vector<char>> &Maze::getMaze()
+std::vector<std::vector<char>> &Maze::getMaze()
 {
     return this->maze;
 }
 
 void Maze::print()
 {
-    cout << "**Printing Maze Structure**" << endl;
+    std::cout << "**Printing Maze Structure**" << std::endl;
     for (unsigned int z = 0; z < this->maze.size(); z++)
     {
         for (unsigned int x = 0; x < this->maze[0].size(); x++)
         {
             if (this->maze[z][x] == 'x')
             {
-                cout << 'x';
+                std::cout << 'x';
             }
             else
             {
-                cout << '.';
+                std::cout << '.';
             }
         }
-        cout << endl;
+        std::cout << std::endl;
     }
-    cout << "**End Prsize_ting Maze**" << endl;
-    cout << endl;
+    std::cout << "**End Prsize_ting Maze**" << std::endl;
+    std::cout << std::endl;
 }
 
-void dfs(vector<vector<char>> &maze, size_t row, size_t col)
+void dfs(std::vector<std::vector<char>> &maze, size_t row, size_t col)
 {
 
     // Base case: check boundary conditions and wrong char
@@ -67,24 +67,24 @@ void dfs(vector<vector<char>> &maze, size_t row, size_t col)
         dfs(maze, row, col + 1);
 }
 
-void floodFill(vector<vector<char>> &maze, size_t row, size_t col)
+void floodFill(std::vector<std::vector<char>> &maze, size_t row, size_t col)
 {
 
     // changing . to o
     // if (maze[row][col] == 'o')
     // {
-    //     cout << "changing to o: row = " << row << "col = " << col << endl;
+    //     std::cout << "changing to o: row = " << row << "col = " << col << std::endl;
     //     return;
     // }
 
     // // Call DFS to start filling
-    // cout << "calling dfs: " << row << " - " << col << endl;
+    // std::cout << "calling dfs: " << row << " - " << col << std::endl;
     dfs(maze, row, col);
 }
 
 bool Maze::validateIsolations()
 {
-    vector<vector<char>> copy = this->maze;
+    std::vector<std::vector<char>> copy = this->maze;
     bool filled = false;
 
     // floodFill(copy, 1, 4);
@@ -96,32 +96,33 @@ bool Maze::validateIsolations()
             if (copy[i][j] == '.')
             {
                 floodFill(copy, i, j);
-                // cout << "Flood fill at i-j = " << i << j << endl;
+                // std::cout << "Flood fill at i-j = " << i << j << std::endl;
                 filled = true;
             }
         }
     }
 
     this->floodedMaze = copy;
+    
 
-    // cout << "\n>> FLOODED MAZE: " << endl;
+    // std::cout << "\n>> FLOODED MAZE: " << std::endl;
     // for (vector<char> row : floodedMaze)
     // {
     //     for (char c : row)
     //     {
-    //         cout << c << " ";
+    //         std::cout << c << " ";
     //     }
-    //     cout << endl;
+    //     std::cout << std::endl;
     // }
 
-    for (vector<char> row : copy)
+    for (std::vector<char> row : copy)
     {
         for (char c : row)
         {
             if (c == '.')
                 return false;
         }
-        // cout << endl;
+        // std::cout << std::endl;
     }
 
     return true;
@@ -131,15 +132,15 @@ bool Maze::validateIsolations()
 
 void Maze::fixIsolations()
 {
-    // cout << "> before fixing isolations..." << endl;
+    // std::cout << "> before fixing isolations..." << std::endl;
 
     // for (vector<char> row : this->floodedMaze)
     // {
     //     for (char c : row)
     //     {
-    //         cout << c << " ";
+    //         std::cout << c << " ";
     //     }
-    //     cout << endl;
+    //     std::cout << std::endl;
     // }
 
     // fixing...
@@ -200,15 +201,15 @@ void Maze::fixIsolations()
             }
         }
     }
-    // cout << "> after fixing isolations..." << endl;
+    // std::cout << "> after fixing isolations..." << std::endl;
 
     // for (vector<char> row : this->maze)
     // {
     //     for (char c : row)
     //     {
-    //         cout << c << " ";
+    //         std::cout << c << " ";
     //     }
-    //     cout << endl;
+    //     std::cout << std::endl;
     // }
 }
 
@@ -291,7 +292,7 @@ void Maze::draw(bool mode)
         // Right wall entrance - place carpet outside at x+1
         outsideEntranceCoor.x += 1;
     }
-    // cout << "Drawing entrance: " << this->entrance.i << ":" << this->entrance.j << endl;
+    // std::cout << "Drawing entrance: " << this->entrance.i << ":" << this->entrance.j << std::endl;
     mc.setBlock(outsideEntranceCoor, mcpp::Blocks::BLUE_CARPET);
 }
 
@@ -505,7 +506,7 @@ void Maze::checkEntrace() {
 
 bool Maze::validateLoops()
 {
-    vector<vector<char>> copy = this->maze;
+    std::vector<std::vector<char>> copy = this->maze;
     // Flood fill from top-left corner (treat walls as passages)
     for (size_t i = 0; i < copy.size(); i++)
     {
@@ -526,28 +527,28 @@ bool Maze::validateLoops()
         }
     }
 
-    // cout << "> reverse maze" << endl;
+    // std::cout << "> reverse maze" << std::endl;
 
     // for (vector<char> row : copy)
     // {
     //     for (char c : row)
     //     {
-    //         cout << c << " ";
+    //         std::cout << c << " ";
     //     }
-    //     cout << endl;
+    //     std::cout << std::endl;
     // }
 
     // Perform flood fill from top-left corner
     floodFill(copy, 0, 0);
 
-    // cout << "\n>> FLOODED MAZE: " << endl;
+    // std::cout << "\n>> FLOODED MAZE: " << std::endl;
     // for (vector<char> row : copy)
     // {
     //     for (char c : row)
     //     {
-    //         cout << c << " ";
+    //         std::cout << c << " ";
     //     }
-    //     cout << endl;
+    //     std::cout << std::endl;
     // }
 
     // Check for remaining 'x's (untreated walls)
@@ -555,7 +556,7 @@ bool Maze::validateLoops()
     {
         for (size_t j = 0; j < copy[0].size(); j++)
         {
-            if (copy[i][j] == 'x')
+            if (copy[i][j] == '.')
             {
                 return false; // Loop detected
             }
@@ -567,7 +568,7 @@ bool Maze::validateLoops()
 
 void Maze::fixLoops()
 {
-    vector<vector<char>> copy = this->maze;
+    std::vector<std::vector<char>> copy = this->maze;
     // Flood fill from top-left corner (treat walls as passages)
     for (size_t i = 0; i < copy.size(); i++)
     {
@@ -623,15 +624,15 @@ void Maze::fixLoops()
         }
     }
 
-    // cout << "> after fixing loops..." << endl;
+    // std::cout << "> after fixing loops..." << std::endl;
 
     // for (vector<char> row : this->maze)
     // {
     //     for (char c : row)
     //     {
-    //         cout << c << " ";
+    //         std::cout << c << " ";
     //     }
-    //     cout << endl;
+    //     std::cout << std::endl;
     // }
 }
 

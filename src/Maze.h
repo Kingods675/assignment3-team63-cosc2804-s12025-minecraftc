@@ -7,7 +7,6 @@
 
 #include <mcpp/mcpp.h>
 
-using namespace std;
 
 struct BlockChange {
     mcpp::Coordinate pos;
@@ -21,8 +20,8 @@ struct Entrance {
 
 class Maze {
     private:
-        vector<vector<char>> maze;
-        vector<vector<char>> floodedMaze;
+        std::vector<std::vector<char>> maze;
+        std::vector<std::vector<char>> floodedMaze;
 
         mcpp::MinecraftConnection& mc;
         mcpp::Coordinate origin;
@@ -37,8 +36,8 @@ class Maze {
         Maze(mcpp::MinecraftConnection& conn);
 
         // methods
-        void build(vector<vector<char>> maze);
-        vector<vector<char>>& getMaze();
+        void build(std::vector<std::vector<char>> maze);
+        std::vector<std::vector<char>>& getMaze();
         void print();
 
         bool validateIsolations();
