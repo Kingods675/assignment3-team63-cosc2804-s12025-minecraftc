@@ -130,14 +130,17 @@ int main(int argc, char **argv)
                     maze.build(mazeStructure);
 
                     bool isolatedOK = maze.validateIsolations();
+                    // std::cout << "IsolatedOK: " << (isolatedOK ? "true" : "false") << std::endl;
                     bool entranceOK = maze.hasValidEntrance();
+                    // std::cout << "entranceOK: " << (entranceOK ? "true" : "false") << std::endl;
                     bool loopsOk = maze.validateLoops();
+                    // std::cout << "loopsOk " << (loopsOk ? "true" : "false") << std::endl;
 
                     if (!isolatedOK || !entranceOK || !loopsOk)
                     {
-                        cout << "Errors detected. Would you like to automatically fix them? (y/n)";
+                        std::cout << "Errors detected. Would you like to automatically fix them? (y/n)";
                         char y;
-                        cin >> y;
+                        std::cin >> y;
                         if (y == 'y' || y == 'Y')
                         {
 
@@ -160,15 +163,15 @@ int main(int argc, char **argv)
                         }
                     }
 
-                    std::cout << endl;
+                    std::cout << std::endl;
 
-                    for (vector<char> row : maze.getMaze())
+                    for (std::vector<char> row : maze.getMaze())
                     {
                         for (char c : row)
                         {
                             std::cout << c;
                         }
-                        std::cout << endl;
+                        std::cout << std::endl;
                     }
 
                     maze.checkEntrace();
