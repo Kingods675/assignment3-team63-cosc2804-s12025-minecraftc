@@ -41,14 +41,13 @@
          }
 
          //test output. will be changed later
-         std::cout << "Maze test: length: " << len << " width: " << wid << std::endl;
 
      }
 
      else{
 
          //test output.
-         std::cout << "Maze test: length: " << len << " width: " << wid << std::endl;
+        std::cout << "No maze to solve" << std::endl;
      }
 
      return inBoundaries;
@@ -120,7 +119,7 @@
                  canTeleport = true;
              }
              }
-             
+
             
              //teleport player to coordinate
              mc.setPlayerPosition(teleportPos);
