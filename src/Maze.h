@@ -49,6 +49,7 @@ class Maze {
 
         bool hasValidEntrance();
         void fixEntrance();
+        void checkEntrace();
         
         void draw(bool mode);
         void deleteMaze();

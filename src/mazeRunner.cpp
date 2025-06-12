@@ -146,30 +146,32 @@ int main(int argc, char **argv)
                                 maze.fixEntrance();
                             }
 
-                            if (!loopsOk)
-                            {
-                                maze.fixLoops();
-                                // loopsOK = maze.validateLoops();
-                            }
-
                             if (!isolatedOK)
                             {
                                 maze.fixIsolations();
                                 // isolatedOK = maze.validateIsolations();
                             }
+
+                            if (!loopsOk)
+                            {
+                                maze.fixLoops();
+                                // loopsOK = maze.validateLoops();
+                            }
                         }
                     }
 
-                    // cout << endl;
+                    std::cout << endl;
 
                     for (vector<char> row : maze.getMaze())
                     {
                         for (char c : row)
                         {
-                            cout << c;
+                            std::cout << c;
                         }
-                        cout << endl;
+                        std::cout << endl;
                     }
+
+                    maze.checkEntrace();
 
                     // if(!isolatedOK && !loopsOk) {
                     //     cout << " Errors detected. Would you like to automatically fix them? (y/n)"

@@ -85,18 +85,19 @@ void floodFill(vector<vector<char>> &maze, size_t row, size_t col)
 bool Maze::validateIsolations()
 {
     vector<vector<char>> copy = this->maze;
+    bool filled = false;
 
     // floodFill(copy, 1, 4);
 
-    for (size_t i = 0; i < copy.size(); i++)
+    for (size_t i = 0; i < copy.size() && !filled; i++)
     {
-        for (size_t j = 0; j < copy[i].size(); j++)
+        for (size_t j = 0; j < copy[i].size() && !filled; j++)
         {
             if (copy[i][j] == '.')
             {
                 floodFill(copy, i, j);
                 cout << "Flood fill at i-j = " << i << j << endl;
-                break;
+                filled = true;
             }
         }
     }
@@ -120,7 +121,7 @@ bool Maze::validateIsolations()
             if (c == '.')
                 return false;
         }
-        cout << endl;
+        // cout << endl;
     }
 
     return true;
@@ -142,6 +143,7 @@ void Maze::fixIsolations()
     // }
 
     // fixing...
+    
 
     for (size_t i = 1; i < this->floodedMaze.size() - 1; i++)
     {
@@ -271,11 +273,24 @@ void Maze::draw(bool mode)
         }
         pos.y++;
     }
+    mcpp::Coordinate entranceCoor = this->origin + mcpp::Coordinate(entrance.j + 1, 0, entrance.i + 1);
 
-    // draw entrance carpet
-    cout << "Drawing entrance: " << this->entrance.i << ":" << this->entrance.j << endl;
-    mcpp::Coordinate entranceCoor = this->origin + mcpp::Coordinate(entrance.j + 1, 0, entrance.i); // TODO: check direction
-    mc.setBlock(entranceCoor, mcpp::Blocks::BLUE_CARPET);
+    mcpp::Coordinate outsideEntranceCoor = entranceCoor;
+    if (entrance.i == 0) {
+        // Top wall entrance - place carpet outside at z-1
+        outsideEntranceCoor.z -= 1;
+    } else if (entrance.i == (int) maze.size() - 1) {
+        // Bottom wall entrance - place carpet outside at z+1
+        outsideEntranceCoor.z += 1;
+    } else if (entrance.j == 0) {
+        // Left wall entrance - place carpet outside at x-1
+        outsideEntranceCoor.x -= 1;
+    } else if (entrance.j == (int) maze[0].size() - 1) {
+        // Right wall entrance - place carpet outside at x+1
+        outsideEntranceCoor.x += 1;
+    }
+    // cout << "Drawing entrance: " << this->entrance.i << ":" << this->entrance.j << endl;
+    mc.setBlock(outsideEntranceCoor, mcpp::Blocks::BLUE_CARPET);
 }
 
 void Maze::deleteMaze()
@@ -390,8 +405,6 @@ void Maze::fixEntrance()
         {
             maze[0][x] = '.';
             entranceCreated = true;
-            entrance.i = 0;
-            entrance.j = x;
             break;
         }
     }
@@ -405,8 +418,6 @@ void Maze::fixEntrance()
             {
                 maze[maze.size() - 1][x] = '.';
                 entranceCreated = true;
-                entrance.i = maze.size() - 1;
-                entrance.j = x;
                 break;
             }
         }
@@ -421,8 +432,6 @@ void Maze::fixEntrance()
             {
                 maze[z][0] = '.';
                 entranceCreated = true;
-                entrance.i = z;
-                entrance.j = 0;
                 break;
             }
         }
@@ -437,8 +446,6 @@ void Maze::fixEntrance()
             {
                 maze[z][maze[0].size() - 1] = '.';
                 entranceCreated = true;
-                entrance.i = z;
-                entrance.j = maze[0].size() - 1;
                 break;
             }
         }
@@ -449,6 +456,49 @@ void Maze::fixEntrance()
     {
         maze[0][1] = '.';
     }
+}
+
+void Maze::checkEntrace() {
+
+    for (size_t x = 1; x < maze[0].size() - 1; x++)
+    {
+        if (maze[0][x] == '.')
+        {
+            entrance.i = 0;
+            entrance.j = x;
+            break;
+        }
+    }
+
+    for (size_t x = 1; x < maze[0].size() - 1; x++)
+        {
+            if (maze[maze.size() - 1][x] == '.')
+            {
+                entrance.i = maze.size() - 1;
+                entrance.j = x;
+                break;
+            }
+        }
+
+    for (size_t z = 1; z < maze.size() - 1; z++)
+        {
+            if (maze[z][0] == '.')
+            {
+                entrance.i = z;
+                entrance.j = 0;
+                break;
+            }
+        }
+
+    for (size_t z = 1; z < maze.size() - 1; z++)
+        {
+            if (maze[z][maze[0].size() - 1] == '.')
+            {
+                entrance.i = z;
+                entrance.j = maze[0].size() - 1;
+                break;
+            }
+        }
 }
 
 bool Maze::validateLoops()
