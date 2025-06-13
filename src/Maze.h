@@ -53,6 +53,9 @@ class Maze {
         void draw(bool mode);
         void deleteMaze();
 
+        void checkMaze();
+        bool hasMaze() const;
+
         void setOrigin(mcpp::Coordinate origin);
 
         ~Maze() {

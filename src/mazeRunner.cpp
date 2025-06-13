@@ -128,66 +128,7 @@ int main(int argc, char **argv)
                     curState = ST_Main;
                     // printMaze(mazeStructure);
                     maze.build(mazeStructure);
-
-                    bool isolatedOK = maze.validateIsolations();
-                    // std::cout << "IsolatedOK: " << (isolatedOK ? "true" : "false") << std::endl;
-                    bool entranceOK = maze.hasValidEntrance();
-                    // std::cout << "entranceOK: " << (entranceOK ? "true" : "false") << std::endl;
-                    bool loopsOk = maze.validateLoops();
-                    // std::cout << "loopsOk " << (loopsOk ? "true" : "false") << std::endl;
-
-                    if (!isolatedOK || !entranceOK || !loopsOk)
-                    {
-                        std::cout << "Errors detected. Would you like to automatically fix them? (y/n)";
-                        char y;
-                        std::cin >> y;
-                        if (y == 'y' || y == 'Y')
-                        {
-                            if (!entranceOK)
-                                {
-                                    maze.fixEntrance();
-                                }
-
-                            while (!isolatedOK ||!loopsOk)
-                            {
-
-
-                                if (!isolatedOK)
-                                {
-                                    maze.fixIsolations();
-                                    isolatedOK = maze.validateIsolations();
-                                }
-
-                                if (!loopsOk)
-                                {
-                                    maze.fixLoops();
-                                    loopsOk = maze.validateLoops();
-                                }
-                            }
-                        }
-                    }
-
-                    std::cout << std::endl;
-
-                    for (std::vector<char> row : maze.getMaze())
-                    {
-                        for (char c : row)
-                        {
-                            std::cout << c;
-                        }
-                        std::cout << std::endl;
-                    }
-
-                    maze.checkEntrace();
-
-                    // if(!isolatedOK && !loopsOk) {
-                    //     cout << " Errors detected. Would you like to automatically fix them? (y/n)"
-                    // }
-                    // 1. fix isolation
-
-                    // 2. fix loops
-
-                    // 3. fix entrances
+                    maze.checkMaze();
                 }
                 else
                 {

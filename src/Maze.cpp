@@ -2,12 +2,12 @@
 #include <vector>
 #include <chrono>
 #include <thread>
+#include <cstdlib> 
+#include <ctime>
 
 #include "Maze.h"
 
 #include <mcpp/mcpp.h>
-
-
 
 Maze::Maze(mcpp::MinecraftConnection &mc) : mc(mc) {};
 
@@ -103,7 +103,6 @@ bool Maze::validateIsolations()
     }
 
     this->floodedMaze = copy;
-    
 
     // std::cout << "\n>> FLOODED MAZE: " << std::endl;
     // for (vector<char> row : floodedMaze)
@@ -142,9 +141,9 @@ void Maze::fixIsolations()
     //     }
     //     std::cout << std::endl;
     // }
+    std::srand(std::time(0));
 
-    // fixing...
-    
+    std::vector<std::pair<size_t, size_t>> breakableWalls;
 
     for (size_t i = 1; i < this->floodedMaze.size() - 1; i++)
     {
@@ -153,50 +152,28 @@ void Maze::fixIsolations()
         {
             if (this->floodedMaze[i][j] == '.')
             {
-                // TODO: check if i and j are in bound
-                // ...
-                // NOTE: current not correct yet
 
-                // size_t x = -1, y = -1;
-
-                // check if TOP wall is breakable
                 if (i >= 2 && this->floodedMaze[i - 2][j] == 'o')
                 {
-                    // replacing the wall from ACTUAL MAZE from 'x' to '.'
-                    this->maze[i - 1][j] = '.';
-                    // x = i-1;
-                    // y = j;
-                    break;
+                    breakableWalls.emplace_back(i - 1, j);
                 }
 
-                // check if BOTTOM wall is breakable
-                else if (i + 2 < this->floodedMaze.size() - 1 && this->floodedMaze[i + 2][j] == 'o')
+                // Check BOTTOM direction
+                if (i + 2 < this->floodedMaze.size() - 1 && this->floodedMaze[i + 2][j] == 'o')
                 {
-                    // replacing the wall from ACTUAL MAZE from 'x' to '.'
-                    this->maze[i + 1][j] = '.';
-                    // x = i+1;
-                    // y = j;
-                    break;
+                    breakableWalls.emplace_back(i + 1, j);
                 }
 
-                // check if RIGHT wall is breakable
-                else if (j + 2 < this->floodedMaze[i].size() - 1 && this->floodedMaze[i][j + 2] == 'o')
+                // Check RIGHT direction
+                if (j + 2 < this->floodedMaze[i].size() - 1 && this->floodedMaze[i][j + 2] == 'o')
                 {
-                    // replacing the wall from ACTUAL MAZE from 'x' to '.'
-                    this->maze[i][j + 1] = '.';
-                    // x = i;
-                    // y = j+1;
-                    break;
+                    breakableWalls.emplace_back(i, j + 1);
                 }
 
-                // check if LEFT wall is breakable
-                else if (j >= 2 && this->floodedMaze[i][j - 2] == 'o')
+                // Check LEFT direction
+                if (j >= 2 && this->floodedMaze[i][j - 2] == 'o')
                 {
-                    // replacing the wall from ACTUAL MAZE from 'x' to '.'
-                    this->maze[i][j - 1] = '.';
-                    // x = i;
-                    // x = i-1;
-                    break;
+                    breakableWalls.emplace_back(i, j - 1);
                 }
             }
         }
@@ -211,127 +188,15 @@ void Maze::fixIsolations()
     //     }
     //     std::cout << std::endl;
     // }
-}
 
-void Maze::draw(bool mode)
-{
-    // tesing mode
-    if (mode == 1)
+    if (!breakableWalls.empty())
     {
-        mc.setPlayerPosition(mcpp::Coordinate(4848, 71, 4369));
+        size_t selected = std::rand() % breakableWalls.size();
+        auto [row, col] = breakableWalls[selected];
+        // size_t wallRow = breakableWalls[selected].first;
+        // size_t wallCol = breakableWalls[selected].second;
+        this->maze[row][col] = '.';
     }
-
-    this->origin = mc.getPlayerPosition(); // x y z
-    mcpp::Coordinate pos = origin;
-
-    changeCapacity = (maze.size() + 2) * (maze[0].size() + 2) * 3; // Worst case
-    changes = new BlockChange[changeCapacity];
-    changeCount = 0;
-
-    // clean up terrain
-    for (size_t i = 0; i < maze.size() + 2; i++)
-    {
-        for (size_t j = 0; j < maze[0].size() + 2; j++)
-        {
-            pos.y = origin.y - 1;
-            if (changeCount < changeCapacity)
-            {
-                changes[changeCount++] = {pos, mc.getBlock(pos)};
-            }
-            mc.setBlock(pos, mcpp::Blocks::GRASS);
-
-            pos.y = origin.y;
-            if (changeCount < changeCapacity)
-            {
-                changes[changeCount++] = {pos, mc.getBlock(pos)};
-            }
-            mc.setBlock(pos, mcpp::Blocks::AIR);
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
-            pos.x++;
-        }
-        pos.z++;
-        pos.x = origin.x;
-    }
-
-    // build maze
-    for (size_t y = 0; y < 3; y++)
-    {
-        pos.x = origin.x + 1;
-        pos.z = origin.z + 1;
-        for (size_t i = 0; i < maze.size(); i++)
-        {
-            for (size_t j = 0; j < maze[i].size(); j++)
-            {
-                if (maze[i][j] == 'x')
-                {
-                    mc.setBlock(pos, mcpp::Blocks::ACACIA_WOOD_PLANK);
-                    std::this_thread::sleep_for(std::chrono::milliseconds(100) );
-                    mc.setBlock(pos, mcpp::Blocks::ACACIA_WOOD_PLANK);
-                    std::this_thread::sleep_for(std::chrono::milliseconds(50));
-                }
-                pos.x++;
-            }
-            pos.z++;
-            pos.x = origin.x + 1;
-        }
-        pos.y++;
-    }
-    mcpp::Coordinate entranceCoor = this->origin + mcpp::Coordinate(entrance.j + 1, 0, entrance.i + 1);
-
-    mcpp::Coordinate outsideEntranceCoor = entranceCoor;
-    if (entrance.i == 0) {
-        // Top wall entrance - place carpet outside at z-1
-        outsideEntranceCoor.z -= 1;
-    } else if (entrance.i == (int) maze.size() - 1) {
-        // Bottom wall entrance - place carpet outside at z+1
-        outsideEntranceCoor.z += 1;
-    } else if (entrance.j == 0) {
-        // Left wall entrance - place carpet outside at x-1
-        outsideEntranceCoor.x -= 1;
-    } else if (entrance.j == (int) maze[0].size() - 1) {
-        // Right wall entrance - place carpet outside at x+1
-        outsideEntranceCoor.x += 1;
-    }
-    // std::cout << "Drawing entrance: " << this->entrance.i << ":" << this->entrance.j << std::endl;
-    mc.setBlock(outsideEntranceCoor, mcpp::Blocks::BLUE_CARPET);
-}
-
-
-void Maze::deleteMaze()
-{
-    mcpp::Coordinate pos = origin;
-    for (size_t y = 0; y < 3; y++)
-    {
-        pos.x = origin.x + 1;
-        pos.z = origin.z + 1;
-        for (size_t i = 0; i < maze.size(); i++)
-        {
-            for (size_t j = 0; j < maze[i].size(); j++)
-            {
-                mc.setBlock(pos, mcpp::Blocks::AIR);
-                std::this_thread::sleep_for(std::chrono::milliseconds(10));
-                pos.x++;
-            }
-            pos.z++;
-            pos.x = origin.x + 1;
-        }
-        pos.y++;
-    }
-
-    for (int i = changeCount - 1; i >= 0; i--)
-    {
-        mc.setBlock(changes[i].pos, changes[i].originalBlock);
-        std::this_thread::sleep_for(std::chrono::milliseconds(10));
-    }
-
-    // Clean up allocated memory
-    if (changes)
-    {
-        delete[] changes;
-        changes = nullptr;
-    }
-    changeCount = 0;
-    changeCapacity = 0;
 }
 
 bool Maze::hasValidEntrance()
@@ -371,6 +236,9 @@ bool Maze::hasValidEntrance()
 
 void Maze::fixEntrance()
 {
+
+    std::srand(std::time(0));
+
     // close all existing openings
     for (size_t x = 0; x < maze[0].size(); x++)
     {
@@ -400,109 +268,58 @@ void Maze::fixEntrance()
         }
     }
 
-    bool entranceCreated = false;
+    std::vector<std::pair<size_t, size_t>> possibleEntrances;
 
-    // 100% open on top
+    // Check top wall
     for (size_t x = 1; x < maze[0].size() - 1; x++)
     {
         if (maze[1][x] == '.')
         {
-            maze[0][x] = '.';
-            entranceCreated = true;
-            break;
+            possibleEntrances.emplace_back(0, x);
         }
     }
 
-    // If not found, try bottom wall
-    if (!entranceCreated)
+    // Check bottom wall
+    for (size_t x = 1; x < maze[0].size() - 1; x++)
     {
-        for (size_t x = 1; x < maze[0].size() - 1; x++)
+        if (maze[maze.size() - 2][x] == '.')
         {
-            if (maze[maze.size() - 2][x] == '.')
-            {
-                maze[maze.size() - 1][x] = '.';
-                entranceCreated = true;
-                break;
-            }
+            possibleEntrances.emplace_back(maze.size() - 1, x);
         }
     }
 
-    // If not found, try left wall
-    if (!entranceCreated)
+    // Check left wall
+    for (size_t z = 1; z < maze.size() - 1; z++)
     {
-        for (size_t z = 1; z < maze.size() - 1; z++)
+        if (maze[z][1] == '.')
         {
-            if (maze[z][1] == '.')
-            {
-                maze[z][0] = '.';
-                entranceCreated = true;
-                break;
-            }
+            possibleEntrances.emplace_back(z, 0);
         }
     }
 
-    // If not found, try right wall
-    if (!entranceCreated)
+    // Check right wall
+    for (size_t z = 1; z < maze.size() - 1; z++)
     {
-        for (size_t z = 1; z < maze.size() - 1; z++)
+        if (maze[z][maze[0].size() - 2] == '.')
         {
-            if (maze[z][maze[0].size() - 2] == '.')
-            {
-                maze[z][maze[0].size() - 1] = '.';
-                entranceCreated = true;
-                break;
-            }
+            possibleEntrances.emplace_back(z, maze[0].size() - 1);
         }
     }
 
-    // If still not found (unlikely), create one arbitrarily
-    if (!entranceCreated)
+    // If we found possible entrances, choose one randomly
+    if (!possibleEntrances.empty())
     {
+        size_t selected = std::rand() % possibleEntrances.size();
+        auto [row, col] = possibleEntrances[selected];
+        // size_t row = possibleEntrances[selected].first;
+        // size_t col = possibleEntrances[selected].second;
+        maze[row][col] = '.';
+    }
+    else
+    {
+        // If no valid entrance found (unlikely), create one arbitrarily
         maze[0][1] = '.';
     }
-}
-
-void Maze::checkEntrace() {
-
-    for (size_t x = 1; x < maze[0].size() - 1; x++)
-    {
-        if (maze[0][x] == '.')
-        {
-            entrance.i = 0;
-            entrance.j = x;
-            break;
-        }
-    }
-
-    for (size_t x = 1; x < maze[0].size() - 1; x++)
-        {
-            if (maze[maze.size() - 1][x] == '.')
-            {
-                entrance.i = maze.size() - 1;
-                entrance.j = x;
-                break;
-            }
-        }
-
-    for (size_t z = 1; z < maze.size() - 1; z++)
-        {
-            if (maze[z][0] == '.')
-            {
-                entrance.i = z;
-                entrance.j = 0;
-                break;
-            }
-        }
-
-    for (size_t z = 1; z < maze.size() - 1; z++)
-        {
-            if (maze[z][maze[0].size() - 1] == '.')
-            {
-                entrance.i = z;
-                entrance.j = maze[0].size() - 1;
-                break;
-            }
-        }
 }
 
 bool Maze::validateLoops()
@@ -640,4 +457,237 @@ void Maze::fixLoops()
 void Maze::setOrigin(mcpp::Coordinate origin)
 {
     this->origin = origin;
+}
+
+void Maze::checkEntrace()
+{
+
+    for (size_t x = 1; x < maze[0].size() - 1; x++)
+    {
+        if (maze[0][x] == '.')
+        {
+            entrance.i = 0;
+            entrance.j = x;
+            break;
+        }
+    }
+
+    for (size_t x = 1; x < maze[0].size() - 1; x++)
+    {
+        if (maze[maze.size() - 1][x] == '.')
+        {
+            entrance.i = maze.size() - 1;
+            entrance.j = x;
+            break;
+        }
+    }
+
+    for (size_t z = 1; z < maze.size() - 1; z++)
+    {
+        if (maze[z][0] == '.')
+        {
+            entrance.i = z;
+            entrance.j = 0;
+            break;
+        }
+    }
+
+    for (size_t z = 1; z < maze.size() - 1; z++)
+    {
+        if (maze[z][maze[0].size() - 1] == '.')
+        {
+            entrance.i = z;
+            entrance.j = maze[0].size() - 1;
+            break;
+        }
+    }
+}
+
+void Maze::checkMaze()
+{
+
+    bool isolatedOK = validateIsolations();
+    // std::cout << "IsolatedOK: " << (isolatedOK ? "true" : "false") << std::endl;
+    bool entranceOK = hasValidEntrance();
+    // std::cout << "entranceOK: " << (entranceOK ? "true" : "false") << std::endl;
+    bool loopsOk = validateLoops();
+    // std::cout << "loopsOk " << (loopsOk ? "true" : "false") << std::endl;
+
+    if (!isolatedOK || !entranceOK || !loopsOk)
+    {
+        std::cout << "Errors detected. Would you like to automatically fix them? (y/n)";
+        char y;
+        std::cin >> y;
+        if (y == 'y' || y == 'Y')
+        {
+            if (!entranceOK)
+            {
+                fixEntrance();
+            }
+
+            while (!isolatedOK || !loopsOk)
+            {
+
+                if (!isolatedOK)
+                {
+                    fixIsolations();
+                    isolatedOK = validateIsolations();
+                }
+
+                if (!loopsOk)
+                {
+                    fixLoops();
+                    loopsOk = validateLoops();
+                }
+            }
+        }
+    }
+
+    std::cout << std::endl;
+
+    for (std::vector<char> row : getMaze())
+    {
+        for (char c : row)
+        {
+            std::cout << c;
+        }
+        std::cout << std::endl;
+    }
+
+    checkEntrace();
+}
+
+bool Maze::hasMaze() const {
+    return !maze.empty();
+}
+
+void Maze::draw(bool mode)
+{
+
+    if (!hasMaze()) {
+        std::cout << "Error: No maze has been loaded. Please create a maze first." << std::endl;
+        return;
+    }
+    
+    // tesing mode
+    if (mode == 1)
+    {
+        mc.setPlayerPosition(mcpp::Coordinate(4848, 71, 4369));
+    }
+
+    this->origin = mc.getPlayerPosition(); // x y z
+    mcpp::Coordinate pos = origin;
+
+    changeCapacity = (maze.size() + 2) * (maze[0].size() + 2) * 3; // Worst case
+    changes = new BlockChange[changeCapacity];
+    changeCount = 0;
+
+    // clean up terrain
+    for (size_t i = 0; i < maze.size() + 2; i++)
+    {
+        for (size_t j = 0; j < maze[0].size() + 2; j++)
+        {
+            pos.y = origin.y - 1;
+            if (changeCount < changeCapacity)
+            {
+                changes[changeCount++] = {pos, mc.getBlock(pos)};
+            }
+            mc.setBlock(pos, mcpp::Blocks::GRASS);
+
+            pos.y = origin.y;
+            if (changeCount < changeCapacity)
+            {
+                changes[changeCount++] = {pos, mc.getBlock(pos)};
+            }
+            mc.setBlock(pos, mcpp::Blocks::AIR);
+            // std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            pos.x++;
+        }
+        pos.z++;
+        pos.x = origin.x;
+    }
+
+    // build maze
+    for (size_t y = 0; y < 3; y++)
+    {
+        pos.x = origin.x + 1;
+        pos.z = origin.z + 1;
+        for (size_t i = 0; i < maze.size(); i++)
+        {
+            for (size_t j = 0; j < maze[i].size(); j++)
+            {
+                if (maze[i][j] == 'x')
+                {
+                    mc.setBlock(pos, mcpp::Blocks::ACACIA_WOOD_PLANK);
+                    std::this_thread::sleep_for(std::chrono::milliseconds(100));
+                }
+                pos.x++;
+            }
+            pos.z++;
+            pos.x = origin.x + 1;
+        }
+        pos.y++;
+    }
+    mcpp::Coordinate entranceCoor = this->origin + mcpp::Coordinate(entrance.j + 1, 0, entrance.i + 1);
+
+    mcpp::Coordinate outsideEntranceCoor = entranceCoor;
+    if (entrance.i == 0)
+    {
+        // Top wall entrance - place carpet outside at z-1
+        outsideEntranceCoor.z -= 1;
+    }
+    else if (entrance.i == (int)maze.size() - 1)
+    {
+        // Bottom wall entrance - place carpet outside at z+1
+        outsideEntranceCoor.z += 1;
+    }
+    else if (entrance.j == 0)
+    {
+        // Left wall entrance - place carpet outside at x-1
+        outsideEntranceCoor.x -= 1;
+    }
+    else if (entrance.j == (int)maze[0].size() - 1)
+    {
+        // Right wall entrance - place carpet outside at x+1
+        outsideEntranceCoor.x += 1;
+    }
+    // std::cout << "Drawing entrance: " << this->entrance.i << ":" << this->entrance.j << std::endl;
+    mc.setBlock(outsideEntranceCoor, mcpp::Blocks::BLUE_CARPET);
+}
+
+void Maze::deleteMaze()
+{
+    mcpp::Coordinate pos = origin;
+    for (size_t y = 0; y < 3; y++)
+    {
+        pos.x = origin.x + 1;
+        pos.z = origin.z + 1;
+        for (size_t i = 0; i < maze.size(); i++)
+        {
+            for (size_t j = 0; j < maze[i].size(); j++)
+            {
+                mc.setBlock(pos, mcpp::Blocks::AIR);
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                pos.x++;
+            }
+            pos.z++;
+            pos.x = origin.x + 1;
+        }
+        pos.y++;
+    }
+
+    for (int i = changeCount - 1; i >= 0; i--)
+    {
+        mc.setBlock(changes[i].pos, changes[i].originalBlock);
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
+    }
+
+    // Clean up allocated memory
+    if (changes)
+    {
+        delete[] changes;
+        changes = nullptr;
+    }
+    changeCount = 0;
+    changeCapacity = 0;
 }

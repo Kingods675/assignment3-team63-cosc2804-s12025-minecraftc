@@ -2,24 +2,24 @@
 1
 done
 7 9
-xxxxx.x
-x.....x
+xxxxxxx
+x.x...x
 x.xxx.x
 x.x...x
 xxx.xxx
 x.....x
 x.xxxxx
 x.....x
-xxxxxxx
+xxx.xxx
 5
 
 
 xxxxx.x
-x.....x
+xx....x
 x.xxx.x
 x.x...x
-xxx.xxx
-x.....x
+x.x.xxx
+xx....x
 x.xxxxx
 x..x..x
 xxxxxxx
@@ -28,8 +28,6 @@ xxxxx.x
 xxx...x
 x.x.x.x
 xx....x
-.xx.x.x
-......x
 x.xxxxx
 x.....x
-xxxx.xx
+xxx.xxx
