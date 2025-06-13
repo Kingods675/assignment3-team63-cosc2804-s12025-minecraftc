@@ -386,6 +386,10 @@ bool Maze::validateLoops()
 
 void Maze::fixLoops()
 {
+    std::srand(std::time(0));
+
+    std::vector<std::pair<size_t, size_t>> addWalls;
+    
     std::vector<std::vector<char>> copy = this->maze;
     // Flood fill from top-left corner (treat walls as passages)
     for (size_t i = 0; i < copy.size(); i++)
@@ -417,31 +421,36 @@ void Maze::fixLoops()
             {
                 if (i >= 2 && copy[i - 2][j] == 'o')
                 {
-                    this->maze[i - 1][j] = 'x';
-                    break;
+                    addWalls.emplace_back(i - 1, j);
                 }
 
-                else if (i + 2 < copy.size() - 1 && copy[i + 2][j] == 'o')
+                if (i + 2 < copy.size() && copy[i + 2][j] == 'o')
                 {
-                    this->maze[i + 1][j] = 'x';
-                    break;
+                    addWalls.emplace_back(i + 1, j);
                 }
 
-                else if (j + 2 < copy[i].size() - 1 && copy[i][j + 2] == 'o')
+                if (j + 2 < copy[i].size() && copy[i][j + 2] == 'o')
                 {
-                    this->maze[i][j + 1] = 'x';
-                    break;
+                    addWalls.emplace_back(i, j + 1);
                 }
 
-                else if (j >= 2 && copy[i][j - 2] == 'o')
+                if (j >= 2 && copy[i][j - 2] == 'o')
                 {
-                    this->maze[i][j - 1] = 'x';
-                    break;
+                    addWalls.emplace_back(i, j - 1);
                 }
             }
         }
     }
+    std::cout << addWalls.size() << std::endl;
 
+    if (!addWalls.empty())
+    {
+        size_t selected = std::rand() % addWalls.size();
+        auto [row, col] = addWalls[selected];
+        // size_t wallRow = addWalls[selected].first;
+        // size_t wallCol = addWalls[selected].second;
+        this->maze[row][col] = 'x';
+    }
     // std::cout << "> after fixing loops..." << std::endl;
 
     // for (vector<char> row : this->maze)
@@ -568,7 +577,7 @@ void Maze::draw(bool mode)
         std::cout << "Error: No maze has been loaded. Please create a maze first." << std::endl;
         return;
     }
-    
+
     // tesing mode
     if (mode == 1)
     {
