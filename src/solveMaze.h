@@ -15,9 +15,9 @@ class solveMaze {
         //solve maze functions
         void setMaze(const std::vector<std::vector<char>>& maze, 
         const mcpp::Coordinate& basePoint);
-        void breadthFirstSearch(bool mazeExist);
+        void breadthFirstSearch(bool mazeExist, bool state);
         void solveMazeManually(bool state, bool mazeExist);
-        bool checkBoundaries(const mcpp::Coordinate& pos);
+        bool checkBoundaries(const mcpp::Coordinate& pos, bool state);
 
 
 

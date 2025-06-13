@@ -11,7 +11,7 @@ void solveMaze:: setMaze(const std::vector<std::vector<char>>& maze,
 
 
 //check if player is within maze
-bool solveMaze::checkBoundaries (const mcpp::Coordinate& pos){
+bool solveMaze::checkBoundaries (const mcpp::Coordinate& pos, bool state){
 
     //store length by getting maze length
     const int len = mazeInput.size();
@@ -27,27 +27,48 @@ bool solveMaze::checkBoundaries (const mcpp::Coordinate& pos){
     //check if in boundaries
     bool inBoundaries = false;
 
+    //testmode
+    if (state == 1){
     //check if both length and width are greater than 0
-    if (len > 0 && wid > 0){
+        if (len > 0 && wid > 0){
 
-    //if within maze dimensions
-    if (pos.x > base.x && pos.x < base.x + len
-    && pos.z > base.z && pos.z < base.z + wid && pos.y < base.y + 2 && pos.y >= base.y){
-        inBoundaries = true;
-    }
-
-        else{
-            inBoundaries = false;
+        //if within maze dimensions
+        if (pos.x > 4849 && pos.x < 4849 + len
+        && pos.z > 4370 && pos.z < 4370 + wid && pos.y < 72 && pos.y >= 71){
+            inBoundaries = true;
         }
 
-        //test output. will be changed later
+            else{
+                inBoundaries = false;
+            }
 
+            //test output. will be changed later
+
+        }
+
+        else{
+
+            //test output.
+        std::cout << "No maze to solve" << std::endl;
+        }
     }
 
     else{
+        if (len > 0 && wid > 0){
 
-        //test output.
-    std::cout << "No maze to solve" << std::endl;
+        //if within maze dimensions
+        if (pos.x > base.x && pos.x < base.x + len
+        && pos.z > base.z && pos.z < base.z + wid && pos.y < base.y + 2 && pos.y >= base.y){
+            inBoundaries = true;
+        }
+
+            else{
+                inBoundaries = false;
+            }
+
+            //test output. will be changed later
+
+        }
     }
 
     return inBoundaries;
@@ -72,20 +93,26 @@ void solveMaze:: solveMazeManually(bool state, bool mazeExist){
 
     //if in test mode:
     if (state == 1){
+        if (mazeExist == true){
         //if basepoint isnt empty
-        if (base != mcpp::Coordinate(0,0,0)){
-    
-    //initialise variable teleportPos
-    mcpp::Coordinate teleportPos = base + mcpp::Coordinate(len - 2, 0, wid - 2);
+            if (base != mcpp::Coordinate(0,0,0)){
+        
+            //initialise variable teleportPos
+            mcpp::Coordinate teleportPos = mcpp::Coordinate(4849, 71,4370) + mcpp::Coordinate(len - 2, 0, wid - 2);
 
-    //teleport player to bottom right
-    mc.setPlayerPosition(teleportPos);
-    std::cout << "Teleporting to: (" << teleportPos.x << ", " << teleportPos.y << ", " << teleportPos.z << ")" << std::endl;
-    }
+            //teleport player to bottom right
+            mc.setPlayerPosition(teleportPos);
+            std::cout << "Teleporting to: (" << teleportPos.x << ", " << teleportPos.y << ", " << teleportPos.z << ")" << std::endl;
+            }
 
-        else{
-            std::cout << "No maze to solve" << std::endl;
-        }
+                else{
+                    std::cout << "No maze to solve" << std::endl;
+                }
+            }
+
+            else{
+                std::cout << "Build maze first" << std::endl;
+            }
     }
 
         //for normal mode
@@ -143,7 +170,7 @@ void solveMaze:: solveMazeManually(bool state, bool mazeExist){
 
 
 
-void solveMaze:: breadthFirstSearch(bool mazeExist){
+void solveMaze:: breadthFirstSearch(bool mazeExist, bool state){
     mcpp::MinecraftConnection mc;
     startPos = mc.getPlayerPosition();
     exitPos = mcpp::Coordinate(0,0,0);
@@ -166,7 +193,7 @@ void solveMaze:: breadthFirstSearch(bool mazeExist){
 
 
     if (mazeExist == true){
-        if (checkBoundaries(startPos)){
+        if (checkBoundaries(startPos, state)){
         
         //begin loop
         while (!exitFound && !queue.empty()){ 

@@ -22,15 +22,13 @@ to be built and type - done:
 Enter the length and width of maze: 
 Enter the maze structure: 
 Maze read successfully
-Errors detected. Would you like to automatically fix them? (y/n)
-xxxxx.x
-x.....x
-x.xxx.x
-x.x...x
+
+xxxxxxx
+x......
 xxx.xxx
+x.x...x
+x.xxx.x
 x.....x
-x.xxxxx
-x..x..x
 xxxxxxx
 
 ------------- MAIN MENU -------------
@@ -42,13 +40,22 @@ xxxxxxx
 
 Enter Menu item to continue: 
 
+------------- MAIN MENU -------------
+1) Create a Maze
+2) Build Maze in MineCraft
+3) Solve Maze
+4) Show Team Information
+5) Exit
+
+Enter Menu item to continue: 
+
 ------------- SOLVE MAZE -------------
 1) Solve Manually
 2) Show Escape Route
 3) Back
 
 Enter Menu item to continue: 
-Teleporting to: (4854, 71, 4374)
+Teleporting to: (4854, 71, 4375)
 
 ------------- SOLVE MAZE -------------
 1) Solve Manually
@@ -65,3 +72,6 @@ Enter Menu item to continue:
 5) Exit
 
 Enter Menu item to continue: 
+
+The End!
+

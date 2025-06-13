@@ -171,7 +171,7 @@ int main(int argc, char **argv)
             else if (menuItem == 2)
             {
                 // Show Escape Route
-                solver.breadthFirstSearch(mazeBuilt);
+                solver.breadthFirstSearch(mazeBuilt, mode);
             }
             else if (menuItem == 3)
             {
