@@ -6,7 +6,6 @@
 #include <thread>
 #include <vector>
 #include <cstdlib>
-#include <algorithm>
 
 
 class solveMaze {
@@ -16,8 +15,8 @@ class solveMaze {
         //solve maze functions
         void setMaze(const std::vector<std::vector<char>>& maze, 
         const mcpp::Coordinate& basePoint);
-        void breadthFirstSearch();
-        void solveMazeManually(bool state);
+        void breadthFirstSearch(bool mazeExist);
+        void solveMazeManually(bool state, bool mazeExist);
         bool checkBoundaries(const mcpp::Coordinate& pos);
 
 

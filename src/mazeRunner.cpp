@@ -66,6 +66,8 @@ int main(int argc, char **argv)
 
     Maze maze(mc);
 
+    bool mazeBuilt = false;
+
     // State machine for menu
     while (curState != ST_Exit)
     {
@@ -85,6 +87,7 @@ int main(int argc, char **argv)
             else if (menuItem == 2)
             {
                 maze.draw(mode);
+                mazeBuilt = true;
             }
             else if (menuItem == 3)
             {
@@ -97,6 +100,7 @@ int main(int argc, char **argv)
             else if (menuItem == 5)
             {
                 curState = ST_Exit;
+                mazeBuilt = false;
             }
             else
             {
@@ -129,6 +133,7 @@ int main(int argc, char **argv)
                     // printMaze(mazeStructure);
                     maze.build(mazeStructure);
                     maze.checkMaze();
+                    mazeBuilt = false;
                 }
                 else
                 {
@@ -161,12 +166,12 @@ int main(int argc, char **argv)
             if (menuItem == 1)
             {
                 // Solve Manually
-                solver.solveMazeManually(mode);
+                solver.solveMazeManually(mode, mazeBuilt);
             }
             else if (menuItem == 2)
             {
                 // Show Escape Route
-                solver.breadthFirstSearch();
+                solver.breadthFirstSearch(mazeBuilt);
             }
             else if (menuItem == 3)
             {
