@@ -441,7 +441,7 @@ void Maze::fixLoops()
             }
         }
     }
-    std::cout << addWalls.size() << std::endl;
+    // std::cout << addWalls.size() << std::endl;
 
     if (!addWalls.empty())
     {
