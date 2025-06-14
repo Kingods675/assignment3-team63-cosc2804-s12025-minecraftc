@@ -319,6 +319,7 @@ void Maze::fixEntrance()
     {
         // If no valid entrance found (unlikely), create one arbitrarily
         maze[0][1] = '.';
+        maze[1][1] = '.';
     }
 }
 
