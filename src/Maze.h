@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MAZE_H
+#define MAZE_H
 
 #include <iostream>
 #include <vector>
@@ -65,3 +66,4 @@ class Maze {
     }
 };
 
+#endif // MAZE_H
