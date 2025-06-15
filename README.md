@@ -15,5 +15,5 @@ COSC2804 - C++ Programming Studio - RMIT university
 - Intergrated code in branch `main`
 
 ## Video recording
-Link: https://unknown.com
+Link: (https://drive.google.com/file/d/1RlFWoZisZqsH_MEH6ibctJ1LJsTXzjyX/view?usp=drive_link)
 Declaration: I have setup the links such that anyone at RMIT can acess the video.   
