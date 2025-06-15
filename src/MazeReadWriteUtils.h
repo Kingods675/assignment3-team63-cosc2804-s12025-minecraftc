@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MAZEREADWRITEUTILS_H
+#define MAZEREADWRITEUTILS_H
 
 #include <iostream>
 #include <deque>
@@ -138,5 +139,5 @@ void printMaze(std::vector< std::vector<char> >& maze){
 }
 
 
-
+#endif
 
