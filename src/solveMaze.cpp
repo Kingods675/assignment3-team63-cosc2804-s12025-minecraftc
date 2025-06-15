@@ -31,7 +31,7 @@ bool solveMaze::checkBoundaries (const mcpp::Coordinate& pos, bool state){
     //testmode
     if (state == 1){
     //check if both length and width are greater than 0
-        if (len > 0 && wid > 0){
+        if (!mazeInput.empty()){
             //if within maze dimensions
             if (pos.x > 4849 && pos.x < 4849 + len
             && pos.z > 4370 && pos.z < 4370 + wid && pos.y < 72 && pos.y >= 71){
@@ -53,7 +53,7 @@ bool solveMaze::checkBoundaries (const mcpp::Coordinate& pos, bool state){
 
     else{
 
-        if (!mazeInput.empty() || !mazeInput[0].empty()){
+        if (!mazeInput.empty()){
         //if within maze dimensions
             if (pos.x > base.x && pos.x < base.x + len
             && pos.z > base.z && pos.z < base.z + wid && pos.y < base.y + 2 && pos.y >= base.y){
@@ -86,9 +86,9 @@ void solveMaze:: solveMazeManually(bool state, bool mazeExist){
     //if in test mode:
     if (state == 1){
         //if built
-        if (mazeExist == true){
+        if (mazeExist){
         //if maze isnt empty
-            if (!mazeInput.empty() || !mazeInput[0].empty()){
+            if (!mazeInput.empty()){
         
             //initialise variable teleportPos
             mcpp::Coordinate teleportPos = mcpp::Coordinate(4849, 71,4370) + mcpp::Coordinate(len - 2, 0, wid - 2);
@@ -114,9 +114,9 @@ void solveMaze:: solveMazeManually(bool state, bool mazeExist){
         bool canTeleport = false;
 
         //check if there is a maze
-        if (!mazeInput.empty() || !mazeInput[0].empty()){
+        if (!mazeInput.empty()){
             //if built
-            if (mazeExist == true){
+            if (mazeExist){
                 mcpp::Coordinate teleportPos;
                 //loop until we can find an empty cell to teleport to in maze
                 while (!canTeleport){
@@ -183,7 +183,7 @@ void solveMaze:: breadthFirstSearch(bool mazeExist, bool state){
     moveTo = {{1,0,0}, {-1,0,0}, {0,0,1}, {0,0,-1}};
 
 
-    if (mazeExist == true){
+    if (mazeExist){
         if (checkBoundaries(startPos, state)){
         //begin loop
             while (!exitFound && !queue.empty()){ 
