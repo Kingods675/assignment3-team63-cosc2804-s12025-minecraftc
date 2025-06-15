@@ -1,0 +1,102 @@
+
+Welcome to MineCraft MazeRunner!
+--------------------------------
+
+------------- MAIN MENU -------------
+1) Create a Maze
+2) Build Maze in MineCraft
+3) Solve Maze
+4) Show Team Information
+5) Exit
+
+Enter Menu item to continue: 
+
+------------- CREATE A MAZE -------------
+1) Read Maze from terminal
+2) Generate Random Maze
+3) Back
+
+Enter Menu item to continue: 
+In Minecraft, navigate to where you need the maze
+to be built and type - done: 
+Enter the length and width of maze: 
+Enter the maze structure: 
+Maze read successfully
+
+xxxxxxx
+x......
+xxx.xxx
+x.x...x
+x.xxx.x
+x.....x
+x.xxx.x
+x.x.x.x
+x...x.x
+x.x.x.x
+xxxxxxx
+
+------------- MAIN MENU -------------
+1) Create a Maze
+2) Build Maze in MineCraft
+3) Solve Maze
+4) Show Team Information
+5) Exit
+
+Enter Menu item to continue: 
+
+------------- MAIN MENU -------------
+1) Create a Maze
+2) Build Maze in MineCraft
+3) Solve Maze
+4) Show Team Information
+5) Exit
+
+Enter Menu item to continue: 
+
+------------- SOLVE MAZE -------------
+1) Solve Manually
+2) Show Escape Route
+3) Back
+
+Enter Menu item to continue: 
+Teleporting to: (4854, 71, 4379)
+
+------------- SOLVE MAZE -------------
+1) Solve Manually
+2) Show Escape Route
+3) Back
+
+Enter Menu item to continue: 
+step [0]: (4854, 71, 4379)
+step [1]: (4854, 71, 4378)
+step [2]: (4854, 71, 4377)
+step [3]: (4854, 71, 4376)
+step [4]: (4854, 71, 4375)
+step [5]: (4854, 71, 4374)
+step [6]: (4854, 71, 4373)
+step [7]: (4853, 71, 4373)
+step [8]: (4852, 71, 4373)
+step [9]: (4852, 71, 4372)
+step [10]: (4852, 71, 4371)
+step [11]: (4853, 71, 4371)
+step [12]: (4854, 71, 4371)
+step [13]: (4855, 71, 4371)
+
+------------- SOLVE MAZE -------------
+1) Solve Manually
+2) Show Escape Route
+3) Back
+
+Enter Menu item to continue: 
+
+------------- MAIN MENU -------------
+1) Create a Maze
+2) Build Maze in MineCraft
+3) Solve Maze
+4) Show Team Information
+5) Exit
+
+Enter Menu item to continue: 
+
+The End!
+

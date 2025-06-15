@@ -87,7 +87,15 @@ int main(int argc, char **argv)
             else if (menuItem == 2)
             {
                 maze.draw(mode);
-                mazeBuilt = true;
+                if (!maze.hasMaze()){
+                    mazeBuilt = false;
+                }
+
+                else{
+                    mazeBuilt = true;
+                }
+
+
             }
             else if (menuItem == 3)
             {
@@ -172,6 +180,13 @@ int main(int argc, char **argv)
             {
                 // Show Escape Route
                 solver.breadthFirstSearch(mazeBuilt, mode);
+                if (mazeBuilt){
+                    solver.buildEscapeRoute(mazeBuilt, mode);
+                }
+
+                else{
+                    std::cout << "Build maze first" << std::endl;
+                }
             }
             else if (menuItem == 3)
             {
@@ -190,7 +205,10 @@ int main(int argc, char **argv)
             curState = ST_Main;
         }
     }
-    maze.deleteMaze();
+
+    if (mazeBuilt){
+        maze.deleteMaze();
+    }
     printExitMassage();
 
     return EXIT_SUCCESS;
