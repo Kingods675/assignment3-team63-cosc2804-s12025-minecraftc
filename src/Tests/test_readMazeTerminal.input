@@ -6,7 +6,7 @@ xxxxxxx
 x.x...x
 x.xxx.x
 x.x...x
-xxx.xxx
+x.x.xxx
 x.....x
 x.xxxxx
 x.....x
@@ -14,6 +14,7 @@ xxx.xxx
 5
 
 
+Isolated maze
 xxxxx.x
 xx....x
 x.xxx.x
@@ -24,10 +25,36 @@ x.xxxxx
 x..x..x
 xxxxxxx
 
+Loops
 xxxxx.x
 xxx...x
+x..xx.x
+x.x...x
 x.x.x.x
-xx....x
+x.....x
 x.xxxxx
 x.....x
-xxx.xxx
+xxxxxxx
+
+
+More than 1 entrance
+xxxxx.x
+xxx...x
+x..xx.x
+x.x...x
+x.x.xxx
+x......
+x.xxxxx
+x.....x
+xx.xxxx
+
+included 3 errors
+xxxxx.x
+xx....x
+x.xxx.x
+x.x...x
+xxx.x.x
+x......
+x.xxxxx
+x.....x
+xx.xxxx

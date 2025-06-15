@@ -206,9 +206,7 @@ int main(int argc, char **argv)
         }
     }
 
-    if (mazeBuilt){
-        maze.deleteMaze();
-    }
+    maze.deleteMaze();
     printExitMassage();
 
     return EXIT_SUCCESS;

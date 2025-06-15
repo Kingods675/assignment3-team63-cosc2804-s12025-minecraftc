@@ -2,7 +2,7 @@
 #include <vector>
 #include <chrono>
 #include <thread>
-#include <cstdlib>
+#include <cstdlib> 
 #include <ctime>
 
 #include "Maze.h"
@@ -152,7 +152,7 @@ void Maze::fixIsolations()
         {
             if (this->floodedMaze[i][j] == '.')
             {
-                // Check TOP direction
+
                 if (i >= 2 && this->floodedMaze[i - 2][j] == 'o')
                 {
                     breakableWalls.emplace_back(i - 1, j);
@@ -390,7 +390,7 @@ void Maze::fixLoops()
     std::srand(std::time(0));
 
     std::vector<std::pair<size_t, size_t>> addWalls;
-
+    
     std::vector<std::vector<char>> copy = this->maze;
     // Flood fill from top-left corner (treat walls as passages)
     for (size_t i = 0; i < copy.size(); i++)
@@ -443,16 +443,14 @@ void Maze::fixLoops()
         }
     }
     // std::cout << addWalls.size() << std::endl;
-    for (int i = 0; i <= 2; i++)
+
+    if (!addWalls.empty())
     {
-        if (!addWalls.empty())
-        {
-            size_t selected = std::rand() % addWalls.size();
-            auto [row, col] = addWalls[selected];
-            // size_t wallRow = addWalls[selected].first;
-            // size_t wallCol = addWalls[selected].second;
-            this->maze[row][col] = 'x';
-        }
+        size_t selected = std::rand() % addWalls.size();
+        auto [row, col] = addWalls[selected];
+        // size_t wallRow = addWalls[selected].first;
+        // size_t wallCol = addWalls[selected].second;
+        this->maze[row][col] = 'x';
     }
     // std::cout << "> after fixing loops..." << std::endl;
 
@@ -543,15 +541,14 @@ void Maze::checkMaze()
                 if (!isolatedOK)
                 {
                     fixIsolations();
+                    isolatedOK = validateIsolations();
                 }
 
                 if (!loopsOk)
                 {
                     fixLoops();
+                    loopsOk = validateLoops();
                 }
-
-                isolatedOK = validateIsolations();
-                loopsOk = validateLoops();
             }
         }
     }
@@ -570,16 +567,14 @@ void Maze::checkMaze()
     checkEntrace();
 }
 
-bool Maze::hasMaze() const
-{
+bool Maze::hasMaze() const {
     return !maze.empty();
 }
 
 void Maze::draw(bool mode)
 {
 
-    if (!hasMaze())
-    {
+    if (!hasMaze()) {
         std::cout << "Error: No maze has been loaded. Please create a maze first." << std::endl;
         return;
     }
@@ -590,6 +585,7 @@ void Maze::draw(bool mode)
         mc.setPlayerPosition(mcpp::Coordinate(4848, 71, 4369));
     }
 
+    this->origin = mc.getPlayerPosition(); // x y z
     mcpp::Coordinate pos = origin;
 
     changeCapacity = (maze.size() + 2) * (maze[0].size() + 2) * 3; // Worst case
