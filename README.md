@@ -4,9 +4,11 @@ COSC2804 - C++ Programming Studio - RMIT university
 ## Image ##
 
 **Before**
+
 ![Before](./Media/2.png)
 
 **After**
+
 ![After](./Media/1.png)
 
 ## Task Allocation
