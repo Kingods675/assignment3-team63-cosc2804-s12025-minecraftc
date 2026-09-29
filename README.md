@@ -1,6 +1,14 @@
 # COSC_Assignment3
 COSC2804 - C++ Programming Studio - RMIT university
 
+## Image ##
+
+**Before**
+![Before](./Media/2.png)
+
+**After**
+![After](./Media/1.png)
+
 ## Task Allocation
 - Team member 1: <Vu Vuong Nguyen, s3969801>
 - Team member 2: <Dropped out>
